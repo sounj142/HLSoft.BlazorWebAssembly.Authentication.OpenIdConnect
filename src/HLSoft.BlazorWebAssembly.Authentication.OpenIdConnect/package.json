@@ -1,0 +1,13 @@
+{
+	"name": "HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect",
+	"version": "1.0.0",
+	"scripts": {
+		"build": "node copyJavascriptFiles.js"
+	},
+	"license": "MIT",
+	"description": "",
+	"author": "Hoang Luong",
+	"dependencies": {
+		"oidc-client": "^1.10.1"
+	}
+}

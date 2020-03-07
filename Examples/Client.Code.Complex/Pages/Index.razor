@@ -1,0 +1,26 @@
+﻿@page "/"
+
+<h1>
+	Hello,
+	<AuthorizeView>
+		<Authorized>
+			@context.User.Identity.Name
+		</Authorized>
+		<NotAuthorized>Anonymous</NotAuthorized>
+	</AuthorizeView>
+	!
+</h1>
+
+<AuthorizeView>
+	<Authorized>
+		<h2>Claims</h2>
+		@foreach (var claim in context.User.Claims)
+		{
+			<p>
+				<b>Type:</b> @claim.Type =>
+				<b>Value:</b> @claim.Value
+			</p>
+		}
+	</Authorized>
+</AuthorizeView>
+

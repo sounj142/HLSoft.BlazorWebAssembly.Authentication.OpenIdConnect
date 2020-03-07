@@ -1,0 +1,53 @@
+﻿@inject IAuthenticationService authenticationService
+@inject AuthenticationEventHandler authenticationEventHandler
+@inject IMatToaster Toaster
+
+<CascadingAuthenticationState>
+    @if (!isAuthenticationLink)
+    {
+        <Router AppAssembly="@typeof(Program).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <h1>Sorry, you're not authorized to view this page.</h1>
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+            </Found>
+            <NotFound>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p>Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    }
+    <MatToastContainer />
+</CascadingAuthenticationState>
+
+@code  {
+    private bool isAuthenticationLink = false;
+
+    protected override void OnInitialized()
+    {
+        isAuthenticationLink = authenticationService.CurrentUriIsAuthenticationUri();
+
+        authenticationEventHandler.SignInSuccessEvent += (obj, e) => {
+            Toaster.Add("Sign in success!", MatToastType.Success);
+        };
+
+        authenticationEventHandler.SignOutSuccessEvent += (obj, e) => {
+            Toaster.Add("Sign out success!", MatToastType.Success);
+        };
+
+        authenticationEventHandler.SignInFailEvent += (obj, str) => {
+            Toaster.Add($"Sign in fail! Error: {str}", MatToastType.Danger);
+        };
+
+        authenticationEventHandler.SignOutFailEvent += (obj, str) => {
+            Toaster.Add($"Sign out fail! Error: {str}", MatToastType.Danger);
+        };
+
+        authenticationEventHandler.SilentRefreshTokenFailEvent += (obj, str) => {
+            Toaster.Add($"Silently refreshing token fail! Error: {str}", MatToastType.Danger);
+        };
+    }
+}
