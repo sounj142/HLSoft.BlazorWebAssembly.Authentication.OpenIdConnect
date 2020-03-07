@@ -159,7 +159,7 @@ protected override async Task OnInitializedAsync()
 
 ## Run the application
 -	Run all three projects, you should have Identity Server on 5000, API on 5001 and Blazor App on 5005.
--	Test the Log in, log out feature in app. You can use these two “awesome” accounts
+-	Test the Log in, log out feature in app. You can use these two “awesome” accounts: alice/alice , bob/bob
 
 
 
