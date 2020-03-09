@@ -28,6 +28,10 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			_clientOptions = clientOptions;
 		}
 
+		/// <summary>
+		/// trigger a redirect from the current window to the authorization endpoint.
+		/// </summary>
+		/// <returns></returns>
 		public async Task SignInAsync()
 		{
 			try
@@ -73,7 +77,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			try
 			{
 				await _jsRuntime.InvokeVoidAsync(Constants.SignoutPopup);
-				await Utils.RemoveSessionStorageData(_jsRuntime, Constants.OidcUserStorageName);
+				await _jsRuntime.InvokeVoidAsync(Constants.RemoveUser);
 				_authenticationEventHandler.NotifySignOutSuccess();
 			}
 			catch (Exception err)
