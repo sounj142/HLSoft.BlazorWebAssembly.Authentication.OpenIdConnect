@@ -10,7 +10,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
     {
 		private const int MAXIMUM_READ_CLAIM_LEVEL = 3;
 
-		public IIdentity CreateIdentity(object userClaims)
+		public virtual IIdentity CreateIdentity(object userClaims)
 		{
 			var claims = ParseClaims(userClaims);
 			DetectClaimForIdentityName(claims);
@@ -22,7 +22,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			return claimsIdentity;
 		}
 
-		private IList<Claim> ParseClaims(object userClaims)
+		protected virtual IList<Claim> ParseClaims(object userClaims)
 		{
 			var result = new List<Claim>();
 			if (userClaims == null)
@@ -76,7 +76,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			}
 		}
 
-		private void DetectClaimForIdentityName(IList<Claim> claims)
+		protected virtual void DetectClaimForIdentityName(IList<Claim> claims)
 		{
 			if (claims == null || claims.Count == 0)
 				return;

@@ -42,6 +42,10 @@
 		return mgr ? mgr.getUser() : null;
 	}
 
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.removeUser = function () {
+		return mgr.removeUser();
+	}
+
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.signinPopup = function () {
 		return mgr.signinPopup();
 	}

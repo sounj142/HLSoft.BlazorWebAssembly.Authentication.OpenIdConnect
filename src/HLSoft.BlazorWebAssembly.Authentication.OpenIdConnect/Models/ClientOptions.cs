@@ -14,8 +14,17 @@
 		public string popupWindowFeatures { get; set; }
 		public bool loadUserInfo { get; set; }
 		public bool automaticSilentRenew { get; set; }
-		public bool monitorAnonymousSession { get; set; }
 		public bool revokeAccessTokenOnSignout { get; set; }
 		public bool filterProtocolClaims { get; set; }
+		public int clockSkew { get; set; }
+		public string popupWindowTarget { get; set; }
+		public int? silentRequestTimeout { get; set; }
+		public int accessTokenExpiringNotificationTime { get; set; }
+		public bool monitorSession { get; set; }
+		public int checkSessionInterval { get; set; }
+		public bool includeIdTokenInSilentRenew { get; set; }
+		public int staleStateAge { get; set; }
+		public object extraQueryParams { get; set; }
+		public object extraTokenParams { get; set; }
 	}
 }

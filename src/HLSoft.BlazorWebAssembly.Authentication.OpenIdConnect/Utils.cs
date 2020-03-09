@@ -29,10 +29,19 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				popup_post_logout_redirect_uri = GetAbsoluteUri(authOption.PopupSignOutRedirectUri, navigationManager),
 				loadUserInfo = authOption.LoadUserInfo,
 				automaticSilentRenew = authOption.AutomaticSilentRenew,
-				monitorAnonymousSession = authOption.MonitorAnonymousSession,
 				revokeAccessTokenOnSignout = authOption.RevokeAccessTokenOnSignout,
 				filterProtocolClaims = authOption.FilterProtocolClaims,
-				popupWindowFeatures = authOption.PopupWindowFeatures
+				popupWindowFeatures = authOption.PopupWindowFeatures,
+				clockSkew = authOption.ClockSkew,
+				popupWindowTarget = authOption.PopupWindowTarget,
+				silentRequestTimeout = authOption.SilentRequestTimeout,
+				accessTokenExpiringNotificationTime = authOption.AccessTokenExpiringNotificationTime,
+				monitorSession = authOption.MonitorSession,
+				checkSessionInterval = authOption.CheckSessionInterval,
+				includeIdTokenInSilentRenew = authOption.IncludeIdTokenInSilentRenew,
+				staleStateAge = authOption.StaleStateAge,
+				extraQueryParams = authOption.ExtraQueryParams,
+				extraTokenParams = authOption.ExtraTokenParams,
 			};
 		}
 

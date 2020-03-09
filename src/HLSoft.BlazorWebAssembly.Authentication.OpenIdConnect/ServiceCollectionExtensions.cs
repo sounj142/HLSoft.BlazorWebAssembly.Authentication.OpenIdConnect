@@ -9,6 +9,9 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 {
     public static class ServiceCollectionExtensions
 	{
+        /// <summary>
+        /// Add authentication services for HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
+        /// </summary>
         public static IServiceCollection AddBlazoredOpenIdConnect(this IServiceCollection services,
             Action<OpenIdConnectOptions> configureOptions)
         {
@@ -18,6 +21,11 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
                 .AddSingleton<IClaimsParser<object>, DefaultClaimsParser>();
         }
 
+        /// <summary>
+        /// Add authentication services for HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect using a custom ClaimsParser
+        /// </summary>
+        /// <typeparam name="TUser">The user type to store data get from [oidc-client].getUser() method</typeparam>
+        /// <typeparam name="TClaimsParser">The Claims Parser</typeparam>
         public static IServiceCollection AddBlazoredOpenIdConnect<TUser, TClaimsParser>(this IServiceCollection services,
             Action<OpenIdConnectOptions> configureOptions)
             where TClaimsParser : class, IClaimsParser<TUser>
