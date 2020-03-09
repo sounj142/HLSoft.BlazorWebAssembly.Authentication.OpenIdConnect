@@ -1,15 +1,19 @@
 # HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
-This is an OpenIdConnect library for Blazor WebAssembly base on oidc-client-js (https://github.com/IdentityModel/oidc-client-js). Actually, this library is a brief wrapper of oidc-client-js, created to make our life with Blazor WebAssembly Client easier, only minimum configuration, minimum code, no javascript. Sound good?
+This is an OpenIdConnect library for Blazor WebAssembly base on [oidc-client-js][oidc-repo]. Actually, this library is a brief wrapper of oidc-client-js, created to make our life with Blazor WebAssembly Client easier, only minimum configuration, minimum code, no javascript. If you want to know more detail, see [oidc-client document][oidc-doc]
 
 
-#Quick Start
+# Quick Start
+In this section, I am going to guide you the basic way to use this library step-by-step. To getting start faster, you should download this git repository. I will leverage the existing API and Identity Server in the examples folder. The remain thing we need to do is implement the Blazor Client App. Follow the steps bellow:
 
-## Create Blazor WebAssembly App
--	Open the sample solution 
--	In this solution, add a new Blazor Webassembly project, call it BlazorClient
+## 1. Create Blazor WebAssembly App
+-	Open the HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect solution. Right click on Examples folder, choose Add new Project, Add a new Blazor WebAssembly project, call it BlazorClient
+- Note: If you can't find Blazor WebAssembly template, run this CLI to install it:
+```sh
+dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.2.0-preview1.20073.1
+```
 
-## Configure port and install Nuget package to BlazorClient App
-- In BlazorClient project, expand Properties, open file launchSettings.json, change the iisSettings section to something like bellow:
+## 2. Configure port and install Nuget package to BlazorClient App
+- In BlazorClient project, expand Properties, open launchSettings.json file, change the iisSettings section to something like bellow:
 
 ```sh
 "iisSettings": {
@@ -21,17 +25,14 @@ This is an OpenIdConnect library for Blazor WebAssembly base on oidc-client-js (
   }
 },
 ```
-
--	Add nuget HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect to project, notice that it’s prerelease. You can install it using Visual Studio or CLI
-
+-	Add nuget HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect to BlazorClient project, notice that it’s prerelease. You can install it using Visual Studio or CLI
 ```sh
 Install-Package HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect -Version 0.5.0-Preview1
 ```
 
-## Configure authentication for BlazorClient app
-
+## 3. Configure authentication for BlazorClient app
 ### Program.cs
--	In Program.cs, call AddBlazoredOpenIdConnect() to config Oidc:
+-	In Program.cs, call AddBlazoredOpenIdConnect() method to config OpenId Connect:
 ```csharp
 public class Program
     {
@@ -55,6 +56,30 @@ public class Program
             await builder.Build().RunAsync();
         }
     }
+```
+If you examine the IdentityServer project, you should see that the config above is corresponding to this Client(file Config.cs):
+```csharp
+new Client
+{
+    ClientId = "Client.Code",
+    ClientName = "Client.Code",
+
+    AllowedGrantTypes = GrantTypes.Code,
+    RequireClientSecret = false,
+
+    RedirectUris = {
+        "http://localhost:5005/signin-callback-oidc",
+    },
+    PostLogoutRedirectUris = { "http://localhost:5005/" },
+
+    AllowedScopes =
+    {
+        IdentityServerConstants.StandardScopes.OpenId,
+        IdentityServerConstants.StandardScopes.Profile,
+        IdentityServerConstants.StandardScopes.Email,
+        "api"
+    }
+},
 ```
 
 ### App.razor
@@ -157,14 +182,16 @@ protected override async Task OnInitializedAsync()
 }
 ```
 
-## Run the application
--	Run all three projects, you should have Identity Server on 5000, API on 5001 and Blazor App on 5005.
--	Test the Log in, log out feature in app. You can use these two “awesome” accounts: alice/alice , bob/bob
+## 4. Run the application
+-	Run all three projects API, IdentityServer and BlazorClient, you should have Identity Server on port 5000, API on 5001 and Blazor App on 5005.
+-	Test the Log in, Log out feature in blazor app. You can use these two “awesome” accounts: alice/alice , bob/bob
 
 
+# Topics
 
 
    [oidc-repo]: <https://github.com/IdentityModel/oidc-client-js>
+   [oidc-doc]: <https://github.com/IdentityModel/oidc-client-js/wiki>
 
 
 
