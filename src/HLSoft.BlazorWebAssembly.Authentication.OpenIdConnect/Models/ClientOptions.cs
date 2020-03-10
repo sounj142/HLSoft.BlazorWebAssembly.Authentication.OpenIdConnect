@@ -1,4 +1,7 @@
-﻿namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
+﻿using System;
+using System.Linq;
+
+namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 {
 	public class ClientOptions
 	{
@@ -26,5 +29,15 @@
 		public int staleStateAge { get; set; }
 		public object extraQueryParams { get; set; }
 		public object extraTokenParams { get; set; }
+
+		public bool IsCode
+		{
+			get
+			{
+				return (response_type ?? string.Empty)
+					.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+					.Any(c => c == "code");
+			}
+		}
 	}
 }

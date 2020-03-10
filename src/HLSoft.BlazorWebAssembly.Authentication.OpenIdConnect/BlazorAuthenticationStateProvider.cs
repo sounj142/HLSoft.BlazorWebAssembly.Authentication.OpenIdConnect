@@ -97,7 +97,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				try
 				{
 					returnUrl = await Utils.GetAndRemoveSessionStorageData(_jsRuntime, "_returnUrl");
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninCallback);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninCallback, _clientOptions.IsCode);
 				}
 				catch (Exception err)
 				{
@@ -135,7 +135,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				try
 				{
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup, _clientOptions.IsCode);
 					await _jsRuntime.InvokeVoidAsync("window.close");
 				}
 				catch (Exception err)
@@ -153,7 +153,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				try
 				{
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSignoutPopup);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSignoutPopup, _clientOptions.IsCode);
 					await _jsRuntime.InvokeVoidAsync("window.close");
 				}
 				catch (Exception err)
