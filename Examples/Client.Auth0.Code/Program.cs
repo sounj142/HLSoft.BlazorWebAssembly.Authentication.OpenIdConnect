@@ -1,7 +1,10 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
+using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -34,13 +37,17 @@ namespace Client.Auth0.Code
 					options.RevokeAccessTokenOnSignout = false;
 
 					options.EndSessionEndpoint = "/oauth0-logout";
-					options.EndSessionEndpointProcess = async (provider) =>
+					options.EndSessionEndpointProcess = async provider =>
 					{
-						var logoutUrl = $"{options.Authority}/v2/logout?client_id={options.ClientId}";
-						var client = provider.GetService<HttpClient>();
-						await client.PostJsonAsync(logoutUrl, new object());
+						var config = provider.GetService<ClientOptions>();
+						var logoutUrl = $"{config.authority}/v2/logout";
+						logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "client_id", config.client_id);
+						logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "returnTo", config.doNothingUri);
+						var authenticationService = provider.GetService<IAuthenticationService>();
+						await authenticationService.SilentOpenUrlInIframe(logoutUrl);
 					};
 
+					// Note: you need to add links bellow and "/oidc-nothing" to the redirect urls in Auth0
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";
 					options.PopupSignOutRedirectUri = "/signout-popup-redirect";
 

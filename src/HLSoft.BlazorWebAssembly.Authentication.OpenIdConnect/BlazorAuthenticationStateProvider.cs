@@ -62,7 +62,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			}
 
 			var user = await _jsRuntime.InvokeAsync<TUser>(Constants.GetUser);
-			//Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(user));
 			var claimsIdentity = _claimsParser.CreateIdentity(user);
 			return new AuthenticationState(new ClaimsPrincipal(claimsIdentity));
 		}
@@ -79,6 +78,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			if (await HandleSigninPopupUri()) return true;
 			if (await HandleSignoutPopupUri()) return true;
 			if (await HandleEndSessionEndpoint()) return true;
+			if (await HandleDoNothingUri()) return true;
 
 			return false;
 		}
@@ -104,6 +104,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				string returnUrl = null;
 				try
 				{
+					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 					returnUrl = await Utils.GetAndRemoveSessionStorageData(_jsRuntime, "_returnUrl");
 					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninCallback, _clientOptions.IsCode);
 				}
@@ -143,6 +144,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				try
 				{
+					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup, _clientOptions.IsCode);
 					await _jsRuntime.InvokeVoidAsync("window.close");
 				}
@@ -161,6 +163,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				try
 				{
+					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSignoutPopup, _clientOptions.IsCode);
 					await _jsRuntime.InvokeVoidAsync("window.close");
 				}
@@ -194,7 +197,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				try
 				{
-					await _openIdConnectOptions.EndSessionEndpointProcess?.Invoke(_clientOptions, _serviceProvider);
+					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
+					await _openIdConnectOptions.EndSessionEndpointProcess?.Invoke(_serviceProvider);
 
 					var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
 					var queryStrings = QueryHelpers.ParseQuery(uri.Query);
@@ -212,6 +216,16 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				{
 					_authenticationEventHandler.NotifySignOutFail(err);
 				}
+				return true;
+			}
+			return false;
+		}
+
+		private async Task<bool> HandleDoNothingUri()
+		{
+			if (Utils.CurrentUriIs(_clientOptions.doNothingUri, _navigationManager))
+			{
+				await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 				return true;
 			}
 			return false;

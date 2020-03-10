@@ -130,5 +130,13 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		public delegate Task EndSessionEndpointHandler(IServiceProvider provider);
 
 		public EndSessionEndpointHandler EndSessionEndpointProcess { get; set; } = null;
+
+		/// <summary>
+		/// Some special Identity Providers need to redirect to some kind of URL, but we don't want to process anything at that URL,
+		/// so we use this "empty url" for these situations.
+		/// Default: "oidc-nothing"
+		/// </summary>
+		public string DoNothingUri { get; set; } = "/oidc-nothing";
+			//"/oidc-nothing";
 	}
 }

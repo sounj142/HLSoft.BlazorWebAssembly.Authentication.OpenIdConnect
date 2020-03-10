@@ -51,6 +51,14 @@
 		/// Returns promise to trigger a redirect of a popup window window to the end session endpoint.
 		/// </summary>
 		public const string SignoutPopup = JavascriptPrefix + "signoutPopup";
+		/// <summary>
+		/// load an url in a hidden iframe
+		/// </summary>
+		public const string SilentOpenUrlInIframe = JavascriptPrefix + "silentOpenUrlInIframe";
+		/// <summary>
+		/// set body.display = none to hide all content in page
+		/// </summary>
+		public const string HideAllPage = JavascriptPrefix + "hideAllPage";
 		public const string SignedInSuccess = "1";
 		public const string SignedOutSuccess = "2";
 	}

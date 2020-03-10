@@ -60,7 +60,7 @@
 	}
 
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSilentCallback = function () {
-		let mgr = new Oidc.UserManager({});
+		let mgr = new Oidc.UserManager();
 		return mgr.signinSilentCallback(window.location.href);
 	}
 
@@ -72,5 +72,27 @@
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSignoutPopup = function (isCode) {
 		let mgr = createUserManager(isCode);
 		mgr.signoutPopupCallback(false);
+	}
+
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.hideAllPage = function () {
+		document.body.style.display = "none";
+	}
+
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.silentOpenUrlInIframe = function (url, timeout) {
+		return new Promise((resolve, reject) => {
+			let iframe = document.createElement("iframe");
+			iframe.style.display = "none";
+			iframe.setAttribute("src", url);
+			document.body.appendChild(iframe);
+
+			let timer = window.setTimeout(() => {
+				reject(new Error("IFrame window timed out."));
+			}, timeout);
+			iframe.onload = () => {
+				document.body.removeChild(iframe);
+				window.clearTimeout(timer);
+				resolve();
+			};
+		});
 	}
 })();

@@ -31,6 +31,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		public object extraTokenParams { get; set; }
 
 		public string endSessionEndpoint { get; set; }
+		public string doNothingUri { get; set; }
 
 		public bool IsCode
 		{
