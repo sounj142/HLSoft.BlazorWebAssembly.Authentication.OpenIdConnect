@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
+using System;
 
 namespace Client.Code.CustomizeUri
 {
@@ -35,6 +36,11 @@ namespace Client.Code.CustomizeUri
 					options.Scope.Add("profile");
 					options.Scope.Add("api");
 				});
+
+			services.AddHttpClient<WeatherForecastService>(client =>
+			{
+				client.BaseAddress = new Uri("http://localhost:5001/");
+			});
 		}
 	}
 }

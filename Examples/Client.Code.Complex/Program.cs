@@ -5,6 +5,7 @@ using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
 using Client.Code.Complex.Auth;
 using Microsoft.AspNetCore.Authorization;
 using MatBlazor;
+using System;
 
 namespace Client.Code.Complex
 {
@@ -66,6 +67,11 @@ namespace Client.Code.Complex
 				config.ShowCloseButton = true;
 				config.MaximumOpacity = 95;
 				config.VisibleStateDuration = 3000;
+			});
+
+			services.AddHttpClient<WeatherForecastService>(client =>
+			{
+				client.BaseAddress = new Uri("http://localhost:5001/");
 			});
 		}
 	}

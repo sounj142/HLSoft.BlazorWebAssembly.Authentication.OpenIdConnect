@@ -1,5 +1,5 @@
 ﻿@page "/add-weather-forecast"
-@inject IAuthenticationStateProvider authenticationStateProvider
+@inject WeatherForecastService weatherForecastService
 @inject NavigationManager navigationManager
 @attribute [Authorize(Policy = Policies.CanManageWeatherForecast)]
 
@@ -21,17 +21,11 @@
 </EditForm>
 
 @code {
-    public class AddWeatherForecastModel
-    {
-        public string WeatherName { get; set; }
-    }
-
     private AddWeatherForecastModel _model = new AddWeatherForecastModel();
 
     private async Task HandleValidSubmit()
     {
-        var httpClient = await authenticationStateProvider.GetHttpClientAsync();
-        await httpClient.PostJsonAsync<bool>("http://localhost:5001/WeatherForecast", _model);
+        await weatherForecastService.Create(_model);
         navigationManager.NavigateTo("/fetchdata");
     }
 }

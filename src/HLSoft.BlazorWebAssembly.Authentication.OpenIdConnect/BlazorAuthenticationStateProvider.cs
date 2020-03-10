@@ -18,7 +18,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		private readonly ClientOptions _clientOptions;
 		private readonly OpenIdConnectOptions _openIdConnectOptions;
 		private readonly IServiceProvider _serviceProvider;
-		private readonly HttpClient _httpClient;
 		private readonly NavigationManager _navigationManager;
 		private readonly IClaimsParser<TUser> _claimsParser;
 		private readonly AuthenticationEventHandler _authenticationEventHandler;
@@ -39,7 +38,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			_clientOptions = clientOptions;
 			_claimsParser = claimsParser;
 			_authenticationEventHandler = authenticationEventHandler;
-			_httpClient = httpClient;
 			_openIdConnectOptions = openIdConnectOptions;
 			_serviceProvider = serviceProvider;
 		}
@@ -176,19 +174,17 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			return false;
 		}
 
-		public async Task<HttpClient> GetHttpClientAsync(string tokenName = "access_token")
+		public async Task SetAuthorizationHeader(HttpClient httpClient, string tokenName = "access_token")
 		{
+			if (httpClient.DefaultRequestHeaders.Authorization != null) return;
 			var authState = await GetAuthenticationStateAsync();
-			_httpClient.DefaultRequestHeaders.Authorization = null;
-			if (authState.User.Identity.IsAuthenticated)
+			if (!authState.User.Identity.IsAuthenticated) return;
+
+			var token = authState.User.Claims.FirstOrDefault(x => x.Type == tokenName);
+			if (!string.IsNullOrEmpty(token?.Value))
 			{
-				var token = authState.User.Claims.FirstOrDefault(x => x.Type == tokenName);
-				if (!string.IsNullOrEmpty(token?.Value))
-				{
-					_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
-				}
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
 			}
-			return _httpClient;
 		}
 
 		private async Task<bool> HandleEndSessionEndpoint()

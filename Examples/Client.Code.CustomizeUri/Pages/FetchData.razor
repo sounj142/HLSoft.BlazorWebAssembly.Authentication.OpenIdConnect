@@ -1,5 +1,5 @@
 ﻿@page "/fetchdata"
-@inject IAuthenticationStateProvider authenticationStateProvider
+@inject WeatherForecastService weatherForecastService
 @attribute [Authorize]
 
 <h1>Weather forecast</h1>
@@ -36,22 +36,10 @@ else
 }
 
 @code {
-    private WeatherForecast[] forecasts;
+    private IList<WeatherForecast> forecasts;
 
     protected override async Task OnInitializedAsync()
     {
-        var httpClient = await authenticationStateProvider.GetHttpClientAsync();
-        forecasts = await httpClient.GetJsonAsync<WeatherForecast[]>("http://localhost:5001/WeatherForecast");
-    }
-
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string Summary { get; set; }
-
-        public int TemperatureF { get; set; }
+        forecasts = await weatherForecastService.GetAll();
     }
 }
