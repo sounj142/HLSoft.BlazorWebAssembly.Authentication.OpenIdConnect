@@ -122,5 +122,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		/// Default: {}
 		/// </summary>
 		public object ExtraTokenParams { get; set; } = new object();
+
+
+		public string EndSessionEndpoint { get; set; } = null;
 	}
 }

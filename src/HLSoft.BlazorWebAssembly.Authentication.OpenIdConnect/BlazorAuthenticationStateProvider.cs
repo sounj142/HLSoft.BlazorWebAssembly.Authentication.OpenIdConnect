@@ -1,6 +1,7 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using System;
 using System.Linq;
@@ -71,6 +72,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			if (await HandleSilentCallbackUri()) return true;
 			if (await HandleSigninPopupUri()) return true;
 			if (await HandleSignoutPopupUri()) return true;
+			if (await HandleEndSessionEndpoint()) return true;
 
 			return false;
 		}
@@ -178,6 +180,37 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				}
 			}
 			return _httpClient;
+		}
+
+		private async Task<bool> HandleEndSessionEndpoint()
+		{
+			if (Utils.CurrentUriIs(_clientOptions.endSessionEndpoint, _navigationManager))
+			{
+				try
+				{
+					Console.WriteLine("----- Url: " + _navigationManager.Uri);
+
+					var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
+					var queryStrings = QueryHelpers.ParseQuery(uri.Query);
+					if (queryStrings.TryGetValue("state", out var stateStr) && !string.IsNullOrEmpty(stateStr))
+					{
+						// the workflow is signout popup
+						await _jsRuntime.InvokeVoidAsync("window.close");
+					}
+					else
+					{
+						_navigationManager.NavigateTo(_clientOptions.post_logout_redirect_uri, true);
+					}
+					//await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup, _clientOptions.IsCode);
+					//await _jsRuntime.InvokeVoidAsync("window.close");
+				}
+				catch (Exception err)
+				{
+					_authenticationEventHandler.NotifySignOutFail(err);
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

@@ -104,7 +104,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			return Utils.CurrentUriIs(_clientOptions.redirect_uri, _navigationManager) ||
 				Utils.CurrentUriIs(_clientOptions.silent_redirect_uri, _navigationManager) ||
 				Utils.CurrentUriIs(_clientOptions.popup_redirect_uri, _navigationManager) ||
-				Utils.CurrentUriIs(_clientOptions.popup_post_logout_redirect_uri, _navigationManager);
+				Utils.CurrentUriIs(_clientOptions.popup_post_logout_redirect_uri, _navigationManager) ||
+				Utils.CurrentUriIs(_clientOptions.endSessionEndpoint, _navigationManager);
 		}
 	}
 }

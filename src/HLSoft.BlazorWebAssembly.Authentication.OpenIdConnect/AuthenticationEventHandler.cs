@@ -72,19 +72,27 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			ProcessSuccess(SignOutSuccessEvent);
 		}
 
+		private bool IsConcernError(string errorMsg)
+		{
+			return errorMsg != "Popup window closed";
+		}
+
 		private void ProcessFail(Exception err, EventHandler<string> eventHandler)
 		{
 			var errorMsg = err.Message.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 					.FirstOrDefault()
 					?.Trim();
-			if (_openIdConnectOptions.WriteErrorToConsole)
+			if (IsConcernError(errorMsg))
 			{
-				Console.Error.WriteLine(err);
+				if (_openIdConnectOptions.WriteErrorToConsole)
+				{
+					Console.Error.WriteLine(err);
+				}
+				Task.Run(() =>
+				{
+					eventHandler?.Invoke(this, errorMsg);
+				});
 			}
-			Task.Run(() =>
-			{
-				eventHandler?.Invoke(this, errorMsg);
-			});
 		}
 
 		private void ProcessSuccess(EventHandler eventHandler)

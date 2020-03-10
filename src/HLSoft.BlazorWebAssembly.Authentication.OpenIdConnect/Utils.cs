@@ -42,6 +42,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				staleStateAge = authOption.StaleStateAge,
 				extraQueryParams = authOption.ExtraQueryParams,
 				extraTokenParams = authOption.ExtraTokenParams,
+				endSessionEndpoint = GetAbsoluteUri(authOption.EndSessionEndpoint, navigationManager),
 			};
 		}
 

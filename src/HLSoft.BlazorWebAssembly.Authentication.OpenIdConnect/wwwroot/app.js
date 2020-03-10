@@ -9,8 +9,14 @@
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.configOidc = function (config) {
 		if (!mgr) {
 			mgr = new Oidc.UserManager(config);
-			mgr._events.addSilentRenewError(notifySilentRenewError);
-			window.mmm = mgr;
+			// subscribe SilentRenewError event
+			mgr.events.addSilentRenewError(notifySilentRenewError);
+			// if there is a custom endSessionEndpoint, hack the Oidc.UserManager to use that url as the session endpoint
+			if (config.endSessionEndpoint) {
+				mgr.metadataService.getEndSessionEndpoint = function () {
+					return Promise.resolve(config.endSessionEndpoint);
+				}
+			}
 		}
 	}
 
