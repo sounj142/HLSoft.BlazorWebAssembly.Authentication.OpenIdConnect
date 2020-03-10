@@ -1,11 +1,8 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
 using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
 using Microsoft.AspNetCore.Blazor.Hosting;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.JSInterop;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Client.Auth0.Code
@@ -47,7 +44,7 @@ namespace Client.Auth0.Code
 						await authenticationService.SilentOpenUrlInIframe(logoutUrl);
 					};
 
-					// Note: you need to add links bellow and "/oidc-nothing" to the redirect urls in Auth0
+					// Note: you need to add urls bellow and "/oidc-nothing" to the redirect urls in Auth0
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";
 					options.PopupSignOutRedirectUri = "/signout-popup-redirect";
 
