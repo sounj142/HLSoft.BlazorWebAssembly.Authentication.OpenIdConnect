@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 {
@@ -123,7 +125,10 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		/// </summary>
 		public object ExtraTokenParams { get; set; } = new object();
 
-
 		public string EndSessionEndpoint { get; set; } = null;
+
+		public delegate Task EndSessionEndpointHandler(IServiceProvider provider);
+
+		public EndSessionEndpointHandler EndSessionEndpointProcess { get; set; } = null;
 	}
 }

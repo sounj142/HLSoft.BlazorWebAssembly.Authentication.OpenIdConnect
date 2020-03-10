@@ -16,6 +16,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 	{
 		private readonly IJSRuntime _jsRuntime;
 		private readonly ClientOptions _clientOptions;
+		private readonly OpenIdConnectOptions _openIdConnectOptions;
+		private readonly IServiceProvider _serviceProvider;
 		private readonly HttpClient _httpClient;
 		private readonly NavigationManager _navigationManager;
 		private readonly IClaimsParser<TUser> _claimsParser;
@@ -28,7 +30,9 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			ClientOptions clientOptions, 
 			IClaimsParser<TUser> claimsParser, 
 			AuthenticationEventHandler authenticationEventHandler,
-			HttpClient httpClient)
+			HttpClient httpClient,
+			OpenIdConnectOptions openIdConnectOptions,
+			IServiceProvider serviceProvider)
 		{
 			_jsRuntime = jsRuntime;
 			_navigationManager = navigationManager;
@@ -36,6 +40,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			_claimsParser = claimsParser;
 			_authenticationEventHandler = authenticationEventHandler;
 			_httpClient = httpClient;
+			_openIdConnectOptions = openIdConnectOptions;
+			_serviceProvider = serviceProvider;
 		}
 
 		public async Task InitializeAuthenticationData()
@@ -188,7 +194,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				try
 				{
-					Console.WriteLine("----- Url: " + _navigationManager.Uri);
+					await _openIdConnectOptions.EndSessionEndpointProcess?.Invoke(_clientOptions, _serviceProvider);
 
 					var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
 					var queryStrings = QueryHelpers.ParseQuery(uri.Query);
@@ -201,8 +207,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 					{
 						_navigationManager.NavigateTo(_clientOptions.post_logout_redirect_uri, true);
 					}
-					//await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup, _clientOptions.IsCode);
-					//await _jsRuntime.InvokeVoidAsync("window.close");
 				}
 				catch (Exception err)
 				{
