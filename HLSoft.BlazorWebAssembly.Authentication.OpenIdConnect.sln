@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Implicit.RequiredLog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Auth0.Code", "Examples\Client.Auth0.Code\Client.Auth0.Code.csproj", "{A4F74D08-6154-400F-A1BF-CA8359323CFA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Google.Implicit", "Examples\Client.Google.Implicit\Client.Google.Implicit.csproj", "{16752A1E-9FE4-4B8C-A539-E18CC9DDF3FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{A4F74D08-6154-400F-A1BF-CA8359323CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4F74D08-6154-400F-A1BF-CA8359323CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4F74D08-6154-400F-A1BF-CA8359323CFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16752A1E-9FE4-4B8C-A539-E18CC9DDF3FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16752A1E-9FE4-4B8C-A539-E18CC9DDF3FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16752A1E-9FE4-4B8C-A539-E18CC9DDF3FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16752A1E-9FE4-4B8C-A539-E18CC9DDF3FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{62B17910-FE3C-4D27-857D-07771C52F664} = {2F56E931-05AF-4BE5-BA27-C6867D69AB0F}
 		{14467785-D6BE-438C-A5BC-8DA50F845568} = {2F56E931-05AF-4BE5-BA27-C6867D69AB0F}
 		{A4F74D08-6154-400F-A1BF-CA8359323CFA} = {2F56E931-05AF-4BE5-BA27-C6867D69AB0F}
+		{16752A1E-9FE4-4B8C-A539-E18CC9DDF3FD} = {2F56E931-05AF-4BE5-BA27-C6867D69AB0F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AF2427A-D1D9-41F2-9E2D-0363A55E0D21}
