@@ -56,9 +56,9 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		public string PopupWindowFeatures { get; set; } = "location=no,toolbar=no,width=500,height=500,left=100,top=100;";
 		/// <summary>
 		/// Whether write the processing error to Console, should enable only in Devlopment
-		/// Default: false
+		/// Default: true
 		/// </summary>
-		public bool WriteErrorToConsole { get; set; } = false;
+		public bool WriteErrorToConsole { get; set; } = true;
 		/// <summary>
 		/// The OIDC/OAuth2 post-logout redirect URI (oidc-client-js:post_logout_redirect_uri) 
 		/// Default: "/"

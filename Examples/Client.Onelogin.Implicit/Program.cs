@@ -22,15 +22,18 @@ namespace Client.Onelogin.Implicit
 			services.AddAuthorizationCore(options => { })
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "https://hoang-luong-dev.onelogin.com/oidc/1/";
+					options.Authority = "https://hoang-luong-dev.onelogin.com/oidc/2/";
 
 					options.ClientId = "9d38b830-45a3-0138-ebe5-020c7f144b4a165866";
 
-					//options.ResponseType = "token id_token";
-					options.ResponseType = "code";
+					options.ResponseType = "token id_token";
+					// due to CORS error on /token endpoint, we can't use authentication code flow on onelogin
+					////options.ResponseType = "code";
 
-					//options.WriteErrorToConsole = true;
-					//options.RevokeAccessTokenOnSignout = true;
+					options.RevokeAccessTokenOnSignout = true;
+
+					// onelogin use PUT method to logout => CORS error will happen, we just ignore logout step on onelogin.
+					options.EndSessionEndpoint = "/onelogin-logout";
 
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";
 					options.PopupSignOutRedirectUri = "/signout-popup-redirect";

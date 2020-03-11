@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -177,12 +176,10 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		{
 			if (httpClient.DefaultRequestHeaders.Authorization != null) return;
 			var authState = await GetAuthenticationStateAsync();
-			if (!authState.User.Identity.IsAuthenticated) return;
-
-			var token = authState.User.Claims.FirstOrDefault(x => x.Type == tokenName);
-			if (!string.IsNullOrEmpty(token?.Value))
+			var token = authState.GetClaim(tokenName);
+			if (!string.IsNullOrEmpty(token))
 			{
-				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 			}
 		}
 

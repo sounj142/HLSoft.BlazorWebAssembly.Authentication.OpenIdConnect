@@ -28,7 +28,7 @@ namespace Client.Azure.Implicit
 
 					options.ResponseType = "token id_token";
 
-					//due to CORS error on token endpoint, we can't use authentication code flow on Azure
+					// due to CORS error on /token endpoint, we can't use authentication code flow on Azure
 					// https://stackoverflow.com/questions/52839055/enabling-cors-on-azure-active-directory
 					////options.ResponseType = "code";
 
