@@ -58,7 +58,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				await InitializeAuthenticationData();
 				_initialized = true;
 			}
-
 			var user = await _jsRuntime.InvokeAsync<TUser>(Constants.GetUser);
 			var claimsIdentity = _claimsParser.CreateIdentity(user);
 			return new AuthenticationState(new ClaimsPrincipal(claimsIdentity));
@@ -144,7 +143,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				{
 					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup, _clientOptions.IsCode);
-					await _jsRuntime.InvokeVoidAsync("window.close");
+					RunAsyncTaskToClosePopup(1000);
 				}
 				catch (Exception err)
 				{
@@ -163,7 +162,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				{
 					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSignoutPopup, _clientOptions.IsCode);
-					await _jsRuntime.InvokeVoidAsync("window.close");
+					RunAsyncTaskToClosePopup(500);
 				}
 				catch (Exception err)
 				{
@@ -187,6 +186,18 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			}
 		}
 
+		private void RunAsyncTaskToClosePopup(int delay = 0)
+		{
+			Task.Run(async () =>
+			{
+				if (delay > 0)
+				{
+					await Task.Delay(delay);
+				}
+				await _jsRuntime.InvokeVoidAsync("window.close");
+			});
+		}
+
 		private async Task<bool> HandleEndSessionEndpoint()
 		{
 			if (Utils.CurrentUriIs(_clientOptions.endSessionEndpoint, _navigationManager))
@@ -194,14 +205,17 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				try
 				{
 					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
-					await _openIdConnectOptions.EndSessionEndpointProcess?.Invoke(_serviceProvider);
+					if (_openIdConnectOptions.EndSessionEndpointProcess != null)
+					{
+						await _openIdConnectOptions.EndSessionEndpointProcess.Invoke(_serviceProvider);
+					}
 
 					var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
 					var queryStrings = QueryHelpers.ParseQuery(uri.Query);
 					if (queryStrings.TryGetValue("state", out var stateStr) && !string.IsNullOrEmpty(stateStr))
 					{
 						// the workflow is signout popup
-						await _jsRuntime.InvokeVoidAsync("window.close");
+						RunAsyncTaskToClosePopup(500);
 					}
 					else
 					{

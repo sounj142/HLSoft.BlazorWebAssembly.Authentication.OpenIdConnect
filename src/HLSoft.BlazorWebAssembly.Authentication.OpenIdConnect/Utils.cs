@@ -20,6 +20,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				authority = authOption.Authority,
 				client_id = authOption.ClientId,
+				client_secret = authOption.ClientSecret,
 				redirect_uri = navigationManager.GetAbsoluteUri(authOption.SignedInCallbackUri),
 				silent_redirect_uri = navigationManager.GetAbsoluteUri(authOption.SilentRedirectUri),
 				response_type = authOption.ResponseType,

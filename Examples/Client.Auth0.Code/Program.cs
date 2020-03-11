@@ -28,11 +28,14 @@ namespace Client.Auth0.Code
 
 					options.ClientId = "mbjoV5gM7AcRpslDFQyc6Qs6GjXPyPWa";
 					options.ResponseType = "code";
+					
 					//options.ResponseType = "token id_token";
 
 					options.WriteErrorToConsole = true;
 					options.RevokeAccessTokenOnSignout = false;
 
+					// because Auth0 don't offer End Session Endpoint in its well-known documentary, we need to
+					// implement a custom url to process this feature
 					options.EndSessionEndpoint = "/oauth0-logout";
 					options.EndSessionEndpointProcess = async provider =>
 					{
@@ -44,13 +47,13 @@ namespace Client.Auth0.Code
 						await authenticationService.SilentOpenUrlInIframe(logoutUrl);
 					};
 
-					// Note: you need to add urls bellow and "/oidc-nothing" to the redirect urls in Auth0
+					// Note: you need to add urls bellow and "/oidc-nothing" to the redirect urls configuration in Auth0
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";
 					options.PopupSignOutRedirectUri = "/signout-popup-redirect";
 
 					options.Scope.Add("openid");
 					options.Scope.Add("profile");
-					options.Scope.Add("api");
+					//options.Scope.Add("api");
 				});
 		}
 	}

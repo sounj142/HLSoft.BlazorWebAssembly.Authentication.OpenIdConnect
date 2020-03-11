@@ -10,10 +10,17 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		/// [Required] The URL of the OIDC/OAuth2 provider (oidc-client-js:authority)
 		/// </summary>
 		public string Authority { get; set; }
+
 		/// <summary>
 		/// [Required] Your client application's identifier as registered with the OIDC/OAuth2 provider (oidc-client-js:client_id)
 		/// </summary>
 		public string ClientId { get; set; }
+
+		/// <summary>
+		/// [Danger!!!] I added ClientSecret here for completeness but please don't use it if possible.
+		/// </summary>
+		public string ClientSecret { get; set; }
+
 		/// <summary>
 		/// [Required] The type of response desired from the OIDC/OAuth2 provider (oidc-client-js:response_type)
 		/// </summary>
@@ -44,9 +51,9 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		public bool FilterProtocolClaims { get; set; } = true;
 		/// <summary>
 		/// The features parameter to window.open for the popup signin window. (oidc-client-js:popupWindowFeatures) 
-		/// Default: "menubar=yes,location=yes,toolbar=yes,width=1200,height=800,left=100,top=100;resizable=yes"
+		/// Default: "location=no,toolbar=no,width=500,height=500,left=100,top=100;"
 		/// </summary>
-		public string PopupWindowFeatures { get; set; } = "menubar=yes,location=yes,toolbar=yes,width=1200,height=800,left=100,top=100;resizable=yes";
+		public string PopupWindowFeatures { get; set; } = "location=no,toolbar=no,width=500,height=500,left=100,top=100;";
 		/// <summary>
 		/// Whether write the processing error to Console, should enable only in Devlopment
 		/// Default: false
