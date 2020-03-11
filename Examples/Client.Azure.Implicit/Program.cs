@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Client.Google.Implicit
+namespace Client.Azure.Implicit
 {
 	public class Program
 	{
@@ -22,19 +22,19 @@ namespace Client.Google.Implicit
 			services.AddAuthorizationCore(options => { })
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "https://accounts.google.com/";
+					options.Authority = "https://login.microsoftonline.com/hlsoftblazortest.onmicrosoft.com/v2.0/";
 
-					options.ClientId = "802236688604-pj1blf39tv42cn02c7bnajdinaf6f9p3.apps.googleusercontent.com";
+					options.ClientId = "d9793137-c826-4456-98af-771afee326ee";
 
 					options.ResponseType = "token id_token";
-					// google don't fully support authentication code flow and required client secret, so don't use this flow. Use implicit flow.
-					////options.ResponseType = "code";
-					////options.ClientSecret = "<client secret>";
 
-					options.WriteErrorToConsole = true;
+					//due to CORS error on token endpoint, we can't use authentication code flow on Azure
+					// https://stackoverflow.com/questions/52839055/enabling-cors-on-azure-active-directory
+					////options.ResponseType = "code";
+
+					//options.WriteErrorToConsole = true;
 					options.RevokeAccessTokenOnSignout = true;
 
-					options.EndSessionEndpoint = "/google-logout";
 
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";
 					options.PopupSignOutRedirectUri = "/signout-popup-redirect";

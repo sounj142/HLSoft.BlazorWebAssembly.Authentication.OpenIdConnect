@@ -27,8 +27,8 @@ namespace Client.Auth0.Code
 					options.Authority = "https://hoang-luong.auth0.com";
 
 					options.ClientId = "mbjoV5gM7AcRpslDFQyc6Qs6GjXPyPWa";
+
 					options.ResponseType = "code";
-					
 					//options.ResponseType = "token id_token";
 
 					options.WriteErrorToConsole = true;
