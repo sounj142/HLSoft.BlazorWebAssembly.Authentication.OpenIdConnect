@@ -1,14 +1,21 @@
 ﻿(function () {
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect = {};
 	let mgr = null;
+	let userStorage = window.sessionStorage;
 
 	function notifySilentRenewError(err) {
 		DotNet.invokeMethodAsync('HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect', 'NotifySilentRefreshTokenFail', err);
 	}
 
+	function prepareOidcConfig(config) {
+		if (!config) config = {};
+		config.userStore = new Oidc.WebStorageStateStore({ store: userStorage });
+		return config;
+	}
+
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.configOidc = function (config) {
 		if (!mgr) {
-			mgr = new Oidc.UserManager(config);
+			mgr = new Oidc.UserManager(prepareOidcConfig(config));
 			// subscribe SilentRenewError event
 			mgr.events.addSilentRenewError(notifySilentRenewError);
 			// if there is a custom endSessionEndpoint, hack the Oidc.UserManager to use that url as the session endpoint
@@ -50,8 +57,8 @@
 
 	function createUserManager(isCode) {
 		return isCode
-			? new Oidc.UserManager({ loadUserInfo: true, response_mode: "query" })
-			: new Oidc.UserManager();
+			? new Oidc.UserManager(prepareOidcConfig({ loadUserInfo: true, response_mode: "query" }))
+			: new Oidc.UserManager(prepareOidcConfig());
 	}
 
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninCallback = function (isCode) {
@@ -60,7 +67,7 @@
 	}
 
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSilentCallback = function () {
-		let mgr = new Oidc.UserManager();
+		let mgr = new Oidc.UserManager(prepareOidcConfig());
 		return mgr.signinSilentCallback(window.location.href);
 	}
 
@@ -94,5 +101,9 @@
 				resolve();
 			};
 		});
+	}
+	// call this method if you want to change the default user store (default: sessionStorage)
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.configUserStore = function (store) {
+		userStorage = store;
 	}
 })();

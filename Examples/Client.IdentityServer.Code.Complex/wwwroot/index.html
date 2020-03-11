@@ -23,6 +23,10 @@
     <link href="/_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
     <script src="/_content/HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect/oidc-client.min.js"></script>
     <script src="/_content/HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect/app.js"></script>
+    <script>
+        // use localStorage instead of sessionStorage to save user store.
+        //window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.configUserStore(window.localStorage);
+    </script>
 </body>
 
 </html>
