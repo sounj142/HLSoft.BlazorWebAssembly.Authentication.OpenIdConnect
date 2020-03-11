@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Azure.Implicit", "Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Okta.Implicit", "Examples\Client.Okta.Implicit\Client.Okta.Implicit.csproj", "{537A9B04-4DB0-4E0E-AFFA-0B1983D87345}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Onelogin.Implicit", "Examples\Client.Onelogin.Implicit\Client.Onelogin.Implicit.csproj", "{2C51B252-81EE-4666-B9D4-0F23A4C2CED0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{537A9B04-4DB0-4E0E-AFFA-0B1983D87345}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{537A9B04-4DB0-4E0E-AFFA-0B1983D87345}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{537A9B04-4DB0-4E0E-AFFA-0B1983D87345}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C51B252-81EE-4666-B9D4-0F23A4C2CED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C51B252-81EE-4666-B9D4-0F23A4C2CED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C51B252-81EE-4666-B9D4-0F23A4C2CED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C51B252-81EE-4666-B9D4-0F23A4C2CED0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{16752A1E-9FE4-4B8C-A539-E18CC9DDF3FD} = {2F56E931-05AF-4BE5-BA27-C6867D69AB0F}
 		{917873D7-0D33-4B08-8E79-4033694AAA90} = {2F56E931-05AF-4BE5-BA27-C6867D69AB0F}
 		{537A9B04-4DB0-4E0E-AFFA-0B1983D87345} = {2F56E931-05AF-4BE5-BA27-C6867D69AB0F}
+		{2C51B252-81EE-4666-B9D4-0F23A4C2CED0} = {2F56E931-05AF-4BE5-BA27-C6867D69AB0F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AF2427A-D1D9-41F2-9E2D-0363A55E0D21}

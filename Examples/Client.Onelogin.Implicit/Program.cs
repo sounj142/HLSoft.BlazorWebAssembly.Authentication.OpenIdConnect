@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Client.Okta.Implicit
+namespace Client.Onelogin.Implicit
 {
 	public class Program
 	{
@@ -22,15 +22,15 @@ namespace Client.Okta.Implicit
 			services.AddAuthorizationCore(options => { })
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "https://dev-902761-admin.okta.com";
+					options.Authority = "https://hoang-luong-dev.onelogin.com/oidc/1/";
 
-					options.ClientId = "0oa3adolwTw5lngzr4x6";
+					options.ClientId = "9d38b830-45a3-0138-ebe5-020c7f144b4a165866";
 
-					options.ResponseType = "token id_token";
-					//options.ResponseType = "code";
+					//options.ResponseType = "token id_token";
+					options.ResponseType = "code";
 
 					//options.WriteErrorToConsole = true;
-					options.RevokeAccessTokenOnSignout = true;
+					//options.RevokeAccessTokenOnSignout = true;
 
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";
 					options.PopupSignOutRedirectUri = "/signout-popup-redirect";
