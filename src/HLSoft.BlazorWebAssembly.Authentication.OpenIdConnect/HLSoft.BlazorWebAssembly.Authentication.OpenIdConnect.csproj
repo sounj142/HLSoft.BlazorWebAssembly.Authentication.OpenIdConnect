@@ -6,7 +6,7 @@
     <RootNamespace>HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect</RootNamespace>
     <PackageId>HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect</PackageId>
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>0.6.0-Preview1</Version>
+    <Version>0.6.1-Preview2</Version>
     <Authors>Hoang Luong</Authors>
     <Copyright>Copyright 2020 (c) Hoang Luong. All rights reserved.</Copyright>
     <Description>An OpenIdConnect library for Blazor WebAssembly. This library is a brief wrapper of oidc-client-js (https://github.com/IdentityModel/oidc-client-js)</Description>
