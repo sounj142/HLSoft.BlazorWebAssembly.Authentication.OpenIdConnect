@@ -46,10 +46,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 					case JsonValueKind.Undefined:
 						break;
 					case JsonValueKind.Array:
-						if (level < MAXIMUM_READ_CLAIM_LEVEL)
-						{
-							ParseArrayClaims(item, claims);
-						}
+						ParseArrayClaims(item, claims);
 						break;
 					case JsonValueKind.Object:
 						if (level < MAXIMUM_READ_CLAIM_LEVEL)

@@ -1,6 +1,6 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
 using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
-using Microsoft.AspNetCore.Blazor.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
@@ -15,13 +15,14 @@ namespace Client.Auth0.Code
 			ConfigureServices(builder.Services);
 
 			builder.RootComponents.Add<App>("app");
-
+			builder.Services.AddBaseAddressHttpClient();
 			await builder.Build().RunAsync();
 		}
 
 		public static void ConfigureServices(IServiceCollection services)
 		{
-			services.AddAuthorizationCore(options => { })
+			services.AddOptions()
+				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
 					options.Authority = "https://hoang-luong.auth0.com";

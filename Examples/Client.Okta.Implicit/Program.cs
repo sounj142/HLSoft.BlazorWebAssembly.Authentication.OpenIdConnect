@@ -1,5 +1,5 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Blazor.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
@@ -13,13 +13,14 @@ namespace Client.Okta.Implicit
 			ConfigureServices(builder.Services);
 
 			builder.RootComponents.Add<App>("app");
-
+			builder.Services.AddBaseAddressHttpClient();
 			await builder.Build().RunAsync();
 		}
 
 		public static void ConfigureServices(IServiceCollection services)
 		{
-			services.AddAuthorizationCore(options => { })
+			services.AddOptions()
+				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
 					options.Authority = "https://dev-902761-admin.okta.com";

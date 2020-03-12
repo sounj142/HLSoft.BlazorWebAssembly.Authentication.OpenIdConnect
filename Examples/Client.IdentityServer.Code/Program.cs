@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
 using System;
@@ -14,13 +14,14 @@ namespace Client.IdentityServer.Code
             ConfigureServices(builder.Services);
 
             builder.RootComponents.Add<App>("app");
-
-            await builder.Build().RunAsync();
+			builder.Services.AddBaseAddressHttpClient();
+			await builder.Build().RunAsync();
         }
 
 		public static void ConfigureServices(IServiceCollection services)
 		{
-			services.AddAuthorizationCore(options => { })
+			services.AddOptions()
+				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
 					options.Authority = "http://localhost:5000/";
