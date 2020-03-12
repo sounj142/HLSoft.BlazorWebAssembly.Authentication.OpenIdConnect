@@ -1,32 +1,29 @@
 ﻿(function () {
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect = {};
 	let mgr = null;
-
-	function getParameterByName(name, url) {
-		if (!url) url = window.location.href;
-		name = name.replace(/[\[\]]/g, '\\$&');
-		let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-			results = regex.exec(url);
-		if (!results) return null;
-		if (!results[2]) return '';
-		return decodeURIComponent(results[2].replace(/\+/g, ' '));
-	}
+	let userStorage = window.sessionStorage;
 
 	function notifySilentRenewError(err) {
 		DotNet.invokeMethodAsync('HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect', 'NotifySilentRefreshTokenFail', err);
 	}
 
+	function prepareOidcConfig(config) {
+		if (!config) config = {};
+		config.userStore = new Oidc.WebStorageStateStore({ store: userStorage });
+		return config;
+	}
+
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.configOidc = function (config) {
 		if (!mgr) {
-			if (config && config.client_id) {
-				sessionStorage.setItem('_configOidc', JSON.stringify(config));
+			mgr = new Oidc.UserManager(prepareOidcConfig(config));
+			// subscribe SilentRenewError event
+			mgr.events.addSilentRenewError(notifySilentRenewError);
+			// if there is a custom endSessionEndpoint, hack the Oidc.UserManager to use that url as the session endpoint
+			if (config.endSessionEndpoint) {
+				mgr.metadataService.getEndSessionEndpoint = function () {
+					return Promise.resolve(config.endSessionEndpoint);
+				}
 			}
-			else {
-				let str = sessionStorage.getItem('_configOidc');
-				config = str ? JSON.parse(str) : null;
-			}
-			mgr = new Oidc.UserManager(config);
-			mgr._events.addSilentRenewError(notifySilentRenewError);
 		}
 	}
 
@@ -58,29 +55,55 @@
 		return mgr.signinSilent();
 	}
 
-	function createUserManager() {
-		return getParameterByName('session_state') && window.location.href.indexOf('?') > 0
-			? new Oidc.UserManager({ loadUserInfo: true, response_mode: "query" })
-			: new Oidc.UserManager();
+	function createUserManager(isCode) {
+		return isCode
+			? new Oidc.UserManager(prepareOidcConfig({ loadUserInfo: true, response_mode: "query" }))
+			: new Oidc.UserManager(prepareOidcConfig());
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninCallback = function () {
-		let mgr = createUserManager();
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninCallback = function (isCode) {
+		let mgr = createUserManager(isCode);
 		return mgr.signinRedirectCallback().then();
 	}
 
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSilentCallback = function () {
-		let mgr = new Oidc.UserManager({});
+		let mgr = new Oidc.UserManager(prepareOidcConfig());
 		return mgr.signinSilentCallback(window.location.href);
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninPopup = function () {
-		let mgr = createUserManager();
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninPopup = function (isCode) {
+		let mgr = createUserManager(isCode);
 		return mgr.signinPopupCallback();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSignoutPopup = function () {
-		let mgr = createUserManager();
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSignoutPopup = function (isCode) {
+		let mgr = createUserManager(isCode);
 		mgr.signoutPopupCallback(false);
+	}
+
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.hideAllPage = function () {
+		document.body.style.display = "none";
+	}
+
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.silentOpenUrlInIframe = function (url, timeout) {
+		return new Promise((resolve, reject) => {
+			let iframe = document.createElement("iframe");
+			iframe.style.display = "none";
+			iframe.setAttribute("src", url);
+			document.body.appendChild(iframe);
+
+			let timer = window.setTimeout(() => {
+				reject(new Error("IFrame window timed out."));
+			}, timeout);
+			iframe.onload = () => {
+				document.body.removeChild(iframe);
+				window.clearTimeout(timer);
+				resolve();
+			};
+		});
+	}
+	// call this method if you want to change the default user store (default: sessionStorage)
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.configUserStore = function (store) {
+		userStorage = store;
 	}
 })();

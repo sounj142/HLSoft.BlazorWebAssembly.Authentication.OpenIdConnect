@@ -1,9 +1,13 @@
-﻿namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
+﻿using System;
+using System.Linq;
+
+namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 {
 	public class ClientOptions
 	{
 		public string authority { get; set; }
 		public string client_id { get; set; }
+		public string client_secret { get; set; }
 		public string redirect_uri { get; set; }
 		public string silent_redirect_uri { get; set; }
 		public string response_type { get; set; }
@@ -26,5 +30,18 @@
 		public int staleStateAge { get; set; }
 		public object extraQueryParams { get; set; }
 		public object extraTokenParams { get; set; }
+
+		public string endSessionEndpoint { get; set; }
+		public string doNothingUri { get; set; }
+
+		public bool IsCode
+		{
+			get
+			{
+				return (response_type ?? string.Empty)
+					.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+					.Any(c => c == "code");
+			}
+		}
 	}
 }

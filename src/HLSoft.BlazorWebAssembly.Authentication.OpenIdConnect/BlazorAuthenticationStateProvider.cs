@@ -1,9 +1,9 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -15,7 +15,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 	{
 		private readonly IJSRuntime _jsRuntime;
 		private readonly ClientOptions _clientOptions;
-		private readonly HttpClient _httpClient;
+		private readonly OpenIdConnectOptions _openIdConnectOptions;
+		private readonly IServiceProvider _serviceProvider;
 		private readonly NavigationManager _navigationManager;
 		private readonly IClaimsParser<TUser> _claimsParser;
 		private readonly AuthenticationEventHandler _authenticationEventHandler;
@@ -27,14 +28,17 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			ClientOptions clientOptions, 
 			IClaimsParser<TUser> claimsParser, 
 			AuthenticationEventHandler authenticationEventHandler,
-			HttpClient httpClient)
+			HttpClient httpClient,
+			OpenIdConnectOptions openIdConnectOptions,
+			IServiceProvider serviceProvider)
 		{
 			_jsRuntime = jsRuntime;
 			_navigationManager = navigationManager;
 			_clientOptions = clientOptions;
 			_claimsParser = claimsParser;
 			_authenticationEventHandler = authenticationEventHandler;
-			_httpClient = httpClient;
+			_openIdConnectOptions = openIdConnectOptions;
+			_serviceProvider = serviceProvider;
 		}
 
 		public async Task InitializeAuthenticationData()
@@ -53,9 +57,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				await InitializeAuthenticationData();
 				_initialized = true;
 			}
-
 			var user = await _jsRuntime.InvokeAsync<TUser>(Constants.GetUser);
-			//Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(user));
 			var claimsIdentity = _claimsParser.CreateIdentity(user);
 			return new AuthenticationState(new ClaimsPrincipal(claimsIdentity));
 		}
@@ -71,6 +73,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			if (await HandleSilentCallbackUri()) return true;
 			if (await HandleSigninPopupUri()) return true;
 			if (await HandleSignoutPopupUri()) return true;
+			if (await HandleEndSessionEndpoint()) return true;
+			if (await HandleDoNothingUri()) return true;
 
 			return false;
 		}
@@ -96,8 +100,9 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				string returnUrl = null;
 				try
 				{
+					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 					returnUrl = await Utils.GetAndRemoveSessionStorageData(_jsRuntime, "_returnUrl");
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninCallback);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninCallback, _clientOptions.IsCode);
 				}
 				catch (Exception err)
 				{
@@ -135,8 +140,9 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				try
 				{
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup);
-					await _jsRuntime.InvokeVoidAsync("window.close");
+					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup, _clientOptions.IsCode);
+					RunAsyncTaskToClosePopup(1000);
 				}
 				catch (Exception err)
 				{
@@ -153,8 +159,9 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				try
 				{
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSignoutPopup);
-					await _jsRuntime.InvokeVoidAsync("window.close");
+					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSignoutPopup, _clientOptions.IsCode);
+					RunAsyncTaskToClosePopup(500);
 				}
 				catch (Exception err)
 				{
@@ -165,19 +172,70 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			return false;
 		}
 
-		public async Task<HttpClient> GetHttpClientAsync(string tokenName = "access_token")
+		public async Task SetAuthorizationHeader(HttpClient httpClient, string tokenName = "access_token")
 		{
+			if (httpClient.DefaultRequestHeaders.Authorization != null) return;
 			var authState = await GetAuthenticationStateAsync();
-			_httpClient.DefaultRequestHeaders.Authorization = null;
-			if (authState.User.Identity.IsAuthenticated)
+			var token = authState.GetClaim(tokenName);
+			if (!string.IsNullOrEmpty(token))
 			{
-				var token = authState.User.Claims.FirstOrDefault(x => x.Type == tokenName);
-				if (!string.IsNullOrEmpty(token?.Value))
-				{
-					_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Value);
-				}
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 			}
-			return _httpClient;
+		}
+
+		private void RunAsyncTaskToClosePopup(int delay = 0)
+		{
+			Task.Run(async () =>
+			{
+				if (delay > 0)
+				{
+					await Task.Delay(delay);
+				}
+				await _jsRuntime.InvokeVoidAsync("window.close");
+			});
+		}
+
+		private async Task<bool> HandleEndSessionEndpoint()
+		{
+			if (Utils.CurrentUriIs(_clientOptions.endSessionEndpoint, _navigationManager))
+			{
+				try
+				{
+					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
+					if (_openIdConnectOptions.EndSessionEndpointProcess != null)
+					{
+						await _openIdConnectOptions.EndSessionEndpointProcess.Invoke(_serviceProvider);
+					}
+
+					var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
+					var queryStrings = QueryHelpers.ParseQuery(uri.Query);
+					if (queryStrings.TryGetValue("state", out var stateStr) && !string.IsNullOrEmpty(stateStr))
+					{
+						// the workflow is signout popup
+						RunAsyncTaskToClosePopup(500);
+					}
+					else
+					{
+						_navigationManager.NavigateTo(_clientOptions.post_logout_redirect_uri, true);
+					}
+				}
+				catch (Exception err)
+				{
+					_authenticationEventHandler.NotifySignOutFail(err);
+				}
+				return true;
+			}
+			return false;
+		}
+
+		private async Task<bool> HandleDoNothingUri()
+		{
+			if (Utils.CurrentUriIs(_clientOptions.doNothingUri, _navigationManager))
+			{
+				await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
+				return true;
+			}
+			return false;
 		}
 	}
 }

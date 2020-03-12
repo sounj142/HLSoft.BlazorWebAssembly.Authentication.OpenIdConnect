@@ -20,13 +20,14 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				authority = authOption.Authority,
 				client_id = authOption.ClientId,
-				redirect_uri = GetAbsoluteUri(authOption.SignedInCallbackUri, navigationManager),
-				silent_redirect_uri = GetAbsoluteUri(authOption.SilentRedirectUri, navigationManager),
+				client_secret = authOption.ClientSecret,
+				redirect_uri = navigationManager.GetAbsoluteUri(authOption.SignedInCallbackUri),
+				silent_redirect_uri = navigationManager.GetAbsoluteUri(authOption.SilentRedirectUri),
 				response_type = authOption.ResponseType,
 				scope = string.Join(" ", authOption.Scope.Distinct()),
-				post_logout_redirect_uri = GetAbsoluteUri(authOption.SignedOutRedirectUri, navigationManager),
-				popup_redirect_uri = GetAbsoluteUri(authOption.PopupSignInRedirectUri, navigationManager),
-				popup_post_logout_redirect_uri = GetAbsoluteUri(authOption.PopupSignOutRedirectUri, navigationManager),
+				post_logout_redirect_uri = navigationManager.GetAbsoluteUri(authOption.SignedOutRedirectUri),
+				popup_redirect_uri = navigationManager.GetAbsoluteUri(authOption.PopupSignInRedirectUri),
+				popup_post_logout_redirect_uri = navigationManager.GetAbsoluteUri(authOption.PopupSignOutRedirectUri),
 				loadUserInfo = authOption.LoadUserInfo,
 				automaticSilentRenew = authOption.AutomaticSilentRenew,
 				revokeAccessTokenOnSignout = authOption.RevokeAccessTokenOnSignout,
@@ -42,6 +43,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				staleStateAge = authOption.StaleStateAge,
 				extraQueryParams = authOption.ExtraQueryParams,
 				extraTokenParams = authOption.ExtraTokenParams,
+				endSessionEndpoint = navigationManager.GetAbsoluteUri(authOption.EndSessionEndpoint),
+				doNothingUri = navigationManager.GetAbsoluteUri(authOption.DoNothingUri),
 			};
 		}
 
@@ -65,14 +68,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		public static bool CurrentUriIs(string url, NavigationManager navigationManager)
 		{
 			return !string.IsNullOrWhiteSpace(url) && navigationManager.Uri.StartsWith(url, StringComparison.OrdinalIgnoreCase);
-		}
-
-		private static string GetAbsoluteUri(string uri, NavigationManager navigationManager)
-		{
-			if (uri == null) return null;
-			return uri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || uri.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
-				? uri
-				: navigationManager.ToAbsoluteUri(uri).AbsoluteUri;
 		}
 	}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 {
-    internal class AuthenticationService : IAuthenticationService
+	internal class AuthenticationService : IAuthenticationService
 	{
 		private readonly IJSRuntime _jsRuntime;
 		private readonly IAuthenticationStateProvider _authenticationStateProvider;
@@ -17,8 +17,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		public AuthenticationService(
 			IJSRuntime jsRuntime,
 			IAuthenticationStateProvider authenticationStateProvider,
-			AuthenticationEventHandler authenticationEventHandler, 
-			NavigationManager navigationManager, 
+			AuthenticationEventHandler authenticationEventHandler,
+			NavigationManager navigationManager,
 			ClientOptions clientOptions)
 		{
 			_jsRuntime = jsRuntime;
@@ -44,7 +44,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				_authenticationEventHandler.NotifySignInFail(err);
 			}
 		}
-		
+
 		public async Task SignInPopupAsync()
 		{
 			try
@@ -104,7 +104,14 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			return Utils.CurrentUriIs(_clientOptions.redirect_uri, _navigationManager) ||
 				Utils.CurrentUriIs(_clientOptions.silent_redirect_uri, _navigationManager) ||
 				Utils.CurrentUriIs(_clientOptions.popup_redirect_uri, _navigationManager) ||
-				Utils.CurrentUriIs(_clientOptions.popup_post_logout_redirect_uri, _navigationManager);
+				Utils.CurrentUriIs(_clientOptions.popup_post_logout_redirect_uri, _navigationManager) ||
+				Utils.CurrentUriIs(_clientOptions.endSessionEndpoint, _navigationManager) ||
+				Utils.CurrentUriIs(_clientOptions.doNothingUri, _navigationManager);
+		}
+
+		public async Task SilentOpenUrlInIframe(string url, int timeout = 10000)
+		{
+			await _jsRuntime.InvokeVoidAsync(Constants.SilentOpenUrlInIframe, url, timeout);
 		}
 	}
 }
