@@ -372,14 +372,14 @@ Note that do not use AuthenticationStateProvider.GetAuthenticationStateAsync() i
 The answer depends on the support of each specific Identity Provider, and also the authentication method you want to use on the client side app.
 - The first thing is to configure the Identity Provider to accept CORS. Because our app is an application that runs in browser, the first thing the browser complains about is CORS. You need to make sure you have configured the Provider to accept CORS from the client's domain.
 - Next, you need to register the urls. Depending on the Identity Provider, these urls are classified into different lists. I will list these urls depending on the authentication method you use in the client app (remember to add domain and port to the url before register):
-+ If you log in using redirect method, you will need 2 urls:
-SignedOutRedirectUri (default: "/"): this is the link to redirect when logged out
-SignedInCallbackUri (default: "/signin-callback-oidc"): link redirect back to the application when logging in
-+ If using popup:
-PopupSignOutRedirectUri: redirect link when logged out
-PopupSignInRedirectUri: redirect link when logging in
-+ If you use EndSessionEndpoint, remember to add this link
-+ In a few cases, if you use DoNothingUri, remember to register it (default: "/oidc-nothing")
+	- If you log in using redirect method, you will need 2 urls:
+		- SignedOutRedirectUri (default: "/"): this is the link to redirect when logged out
+		- SignedInCallbackUri (default: "/signin-callback-oidc"): link redirect back to the application when logging in
+	- If using popup:
+		- PopupSignOutRedirectUri: redirect link when logged out
+		- PopupSignInRedirectUri: redirect link when logging in
+	- If you use EndSessionEndpoint, remember to add this link
+	- In a few cases, if you use DoNothingUri, remember to register it (default: "/oidc-nothing")
 In addition, most providers will require you to register to add the domain of website.
 
 ## 13. I see you have lots of examples for Identity Server, does the library support Identity Server the most? How many other Identity Providers are supported?
