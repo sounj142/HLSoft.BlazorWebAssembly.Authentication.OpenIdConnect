@@ -23,9 +23,9 @@ namespace Client.Okta.Implicit
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "https://dev-902761-admin.okta.com";
+					options.Authority = "<identity provider url>";
 
-					options.ClientId = "0oa3adolwTw5lngzr4x6";
+					options.ClientId = "<client id>";
 
 					options.ResponseType = "token id_token";
 					//options.ResponseType = "code";

@@ -23,9 +23,9 @@ namespace Client.Azure.Implicit
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "https://login.microsoftonline.com/hlsoftblazortest.onmicrosoft.com/v2.0/";
+					options.Authority = "<identity provider url>";
 
-					options.ClientId = "d9793137-c826-4456-98af-771afee326ee";
+					options.ClientId = "<client id>";
 
 					options.ResponseType = "token id_token";
 

@@ -25,9 +25,9 @@ namespace Client.Auth0.Code
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "https://hoang-luong.auth0.com";
+					options.Authority = "<identity provider url>";
 
-					options.ClientId = "mbjoV5gM7AcRpslDFQyc6Qs6GjXPyPWa";
+					options.ClientId = "<client id>";
 
 					options.ResponseType = "code";
 					//options.ResponseType = "token id_token";
