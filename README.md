@@ -383,9 +383,20 @@ The answer depends on the support of each specific Identity Provider, and also t
 In addition, most providers will require you to register to add the domain of website.
 
 ## 13. I see you have lots of examples for Identity Server, does the library support Identity Server the most? How many other Identity Providers are supported?
-Library has the best support for Identity Server. However, in theory, any Provider implements properly OpenId Connect will be supported. You can see I have many examples for other providers. However, the problem is that sometimes other providers do not provide end_session_endpoint and you need to code to solve it. You can see the solution for this problem above.
-Another problem is that most providers only have good support for implicit flow, not authentication code flow, usually due to CORS errors
+Library has the best support for Identity Server. However, in theory, any Provider implements properly OpenId Connect will be supported. You can see I have many examples for other providers. The problem is that sometimes other providers do not provide end_session_endpoint and you need to code to solve it. You can see the solution for this problem above.
+Another problem is most providers only have good support for implicit flow, not authentication code flow, usually due to CORS errors
 
+## 14. Library uses callback urls like /signin-callback-oidc, /signin-popup-oidc ect... Are there any rules for naming these urls?
+No, there are no naming constraints. You are free to use any name you want, as long as it does not conflict with the urls within your application.
+
+## 15. I want to receive notification when my login is successful, or when an error occurs. Is there any way to do it?
+You can use the DI to get an AuthenticationEventHandler object and register to capture events, including
+- SignInFailEvent: Occurs when there is a login error
+- SignOutFailEvent: Occurs when there is a logout error
+- SilentRefreshTokenFailEvent: Occurs when there is an error in the process of refreshing the token automatically
+- SignInSuccessEvent: Occurs when logging in successfully
+- SignOutSuccessEvent: Occurs when the logout is successful
+You can refer to Client.IdentityServer.Code.Complex to have an example.
 
    [oidc-repo]: <https://github.com/IdentityModel/oidc-client-js>
    [oidc-doc]: <https://github.com/IdentityModel/oidc-client-js/wiki>
