@@ -1,0 +1,9 @@
+﻿@inject IAuthenticationService authenticationService
+
+@code 
+{
+	protected override Task OnInitializedAsync()
+	{
+		return authenticationService.SignInAsync();
+	}
+}
