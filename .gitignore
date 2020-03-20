@@ -329,3 +329,4 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 /Examples/IdentityServer/tempkey.rsa
+/src/HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect/package-lock.json

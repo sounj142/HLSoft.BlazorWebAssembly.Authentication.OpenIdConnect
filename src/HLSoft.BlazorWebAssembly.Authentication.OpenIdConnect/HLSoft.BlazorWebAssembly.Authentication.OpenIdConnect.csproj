@@ -5,7 +5,7 @@
     <RazorLangVersion>3.0</RazorLangVersion>
     <RootNamespace>HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect</RootNamespace>
     <PackageId>HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect</PackageId>
-	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.6.1-Preview2</Version>
     <Authors>Hoang Luong</Authors>
     <Copyright>Copyright 2020 (c) Hoang Luong. All rights reserved.</Copyright>
@@ -22,9 +22,9 @@
     <Compile Remove="node_modules\**" />
     <EmbeddedResource Remove="node_modules\**" />
     <None Remove="node_modules\**" />
-	<Content Remove="package-lock.json" />
-	<Content Remove="package.json" />
-	<None Remove="copyJavascriptFiles.js" />
+	  <Content Remove="package-lock.json" />
+	  <Content Remove="package.json" />
+	  <None Remove="copyJavascriptFiles.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,5 +33,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="npx minify ./Scripts/app.js &gt; ./wwwroot/app.min.js" />
+  </Target>
 
 </Project>
