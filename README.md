@@ -372,20 +372,31 @@ Note that do not use AuthenticationStateProvider.GetAuthenticationStateAsync() i
 The answer depends on the support of each specific Identity Provider, and also the authentication method you want to use on the client side app.
 - The first thing is to configure the Identity Provider to accept CORS. Because our app is an application that runs in browser, the first thing the browser complains about is CORS. You need to make sure you have configured the Provider to accept CORS from the client's domain.
 - Next, you need to register the urls. Depending on the Identity Provider, these urls are classified into different lists. I will list these urls depending on the authentication method you use in the client app (remember to add domain and port to the url before register):
-+ If you log in using redirect method, you will need 2 urls:
-SignedOutRedirectUri (default: "/"): this is the link to redirect when logged out
-SignedInCallbackUri (default: "/signin-callback-oidc"): link redirect back to the application when logging in
-+ If using popup:
-PopupSignOutRedirectUri: redirect link when logged out
-PopupSignInRedirectUri: redirect link when logging in
-+ If you use EndSessionEndpoint, remember to add this link
-+ In a few cases, if you use DoNothingUri, remember to register it (default: "/oidc-nothing")
+	- If you log in using redirect method, you will need 2 urls:
+		- SignedOutRedirectUri (default: "/"): this is the link to redirect when logged out
+		- SignedInCallbackUri (default: "/signin-callback-oidc"): link redirect back to the application when logging in
+	- If using popup:
+		- PopupSignOutRedirectUri: redirect link when logged out
+		- PopupSignInRedirectUri: redirect link when logging in
+	- If you use EndSessionEndpoint, remember to add this link
+	- In a few cases, if you use DoNothingUri, remember to register it (default: "/oidc-nothing")
 In addition, most providers will require you to register to add the domain of website.
 
 ## 13. I see you have lots of examples for Identity Server, does the library support Identity Server the most? How many other Identity Providers are supported?
-Library has the best support for Identity Server. However, in theory, any Provider implements properly OpenId Connect will be supported. You can see I have many examples for other providers. However, the problem is that sometimes other providers do not provide end_session_endpoint and you need to code to solve it. You can see the solution for this problem above.
-Another problem is that most providers only have good support for implicit flow, not authentication code flow, usually due to CORS errors
+Library has the best support for Identity Server. However, in theory, any Provider implements properly OpenId Connect will be supported. You can see I have many examples for other providers. The problem is that sometimes other providers do not provide end_session_endpoint and you need to code to solve it. You can see the solution for this problem above.
+Another problem is most providers only have good support for implicit flow, not authentication code flow, usually due to CORS errors
 
+## 14. Library uses callback urls like /signin-callback-oidc, /signin-popup-oidc ect... Are there any rules for naming these urls?
+No, there are no naming constraints. You are free to use any name you want, as long as it does not conflict with the urls within your application.
+
+## 15. I want to receive notification when my login is successful, or when an error occurs. Is there any way to do it?
+You can use the DI to get an AuthenticationEventHandler object and register to capture events, including
+- SignInFailEvent: Occurs when there is a login error
+- SignOutFailEvent: Occurs when there is a logout error
+- SilentRefreshTokenFailEvent: Occurs when there is an error in the process of refreshing the token automatically
+- SignInSuccessEvent: Occurs when logging in successfully
+- SignOutSuccessEvent: Occurs when the logout is successful
+You can refer to Client.IdentityServer.Code.Complex to have an example.
 
    [oidc-repo]: <https://github.com/IdentityModel/oidc-client-js>
    [oidc-doc]: <https://github.com/IdentityModel/oidc-client-js/wiki>
