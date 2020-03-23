@@ -18,7 +18,7 @@ namespace Api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
-                    options.Authority = "http://localhost:5000";
+                    options.Authority = "https://localhost:5000";
                     options.RequireHttpsMetadata = false;
                     
                     options.Audience = "api";

@@ -37,7 +37,7 @@ namespace Client.IdentityServer.Code.Complex
 			//services.AddBlazoredOpenIdConnect(options => // switch to this line to use default ClaimsParser
 			services.AddBlazoredOpenIdConnect<User, CustomClaimsParser>(options => // note: don't use this config with External Google/IdentityServer, the User class is not compatible with claims from these source
 			{
-				options.Authority = "http://localhost:5000/";
+				options.Authority = "https://localhost:5000/";
 
 				options.ClientId = "Client.Code.Complex";
 				options.ResponseType = "code";

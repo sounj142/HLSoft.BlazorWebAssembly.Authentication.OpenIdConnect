@@ -24,7 +24,7 @@ namespace Client.IdentityServer.Code
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "http://localhost:5000/";
+					options.Authority = "https://localhost:5000/";
 
 					options.ClientId = "Client.Code";
 					options.ResponseType = "code";

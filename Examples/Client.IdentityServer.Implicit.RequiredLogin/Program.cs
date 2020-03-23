@@ -24,7 +24,7 @@ namespace Client.IdentityServer.Implicit.RequiredLogin
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "http://localhost:5000/";
+					options.Authority = "https://localhost:5000/";
 
 					options.ClientId = "Client.Implicit.RequiredLogin";
 					options.ResponseType = "token id_token";
