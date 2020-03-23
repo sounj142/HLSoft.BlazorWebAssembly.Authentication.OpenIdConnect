@@ -30,7 +30,6 @@ namespace Client.Okta.Implicit
 					options.ResponseType = "token id_token";
 					//options.ResponseType = "code";
 
-					//options.WriteErrorToConsole = true;
 					options.RevokeAccessTokenOnSignout = true;
 
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";

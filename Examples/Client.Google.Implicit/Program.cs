@@ -19,6 +19,8 @@ namespace Client.Google.Implicit
 
 		public static void ConfigureServices(IServiceCollection services)
 		{
+			AuthConfig.WriteErrorToConsole = true;
+
 			services.AddOptions()
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
@@ -32,7 +34,6 @@ namespace Client.Google.Implicit
 					////options.ResponseType = "code";
 					////options.ClientSecret = "<client secret>";
 
-					options.WriteErrorToConsole = true;
 					options.RevokeAccessTokenOnSignout = true;
 
 					options.EndSessionEndpoint = "/google-logout";

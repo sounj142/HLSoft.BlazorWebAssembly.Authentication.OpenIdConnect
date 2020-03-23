@@ -83,14 +83,13 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 					?.Trim();
 			if (IsConcernError(errorMsg))
 			{
-				Task.Run(async () =>
+				if (AuthConfig.WriteErrorToConsole)
+				{
+					Console.Error.WriteLine(err);
+				}
+				Task.Run(() =>
 				{
 					eventHandler?.Invoke(this, errorMsg);
-					var openIdConnectOptions = await _openIdConnectOptionsTask;
-					if (openIdConnectOptions.WriteErrorToConsole)
-					{
-						Console.Error.WriteLine(err);
-					}
 				});
 			}
 		}

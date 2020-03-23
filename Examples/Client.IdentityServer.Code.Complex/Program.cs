@@ -32,7 +32,7 @@ namespace Client.IdentityServer.Code.Complex
 						.RequireClaim("api_role", "Admin")
 						.Build());
 			});
-
+			AuthConfig.WriteErrorToConsole = true;
 
 			//services.AddBlazoredOpenIdConnect(options => // switch to this line to use default ClaimsParser
 			services.AddBlazoredOpenIdConnect<User, CustomClaimsParser>(options => // note: don't use this config with External Google/IdentityServer, the User class is not compatible with claims from these source
@@ -47,8 +47,6 @@ namespace Client.IdentityServer.Code.Complex
 				options.PopupSignInRedirectUri = "/signin-popup-oidc";
 				options.SignedInCallbackUri = "/signin-callback-oidc";
 				options.SilentRedirectUri = "/silent-callback-oidc";
-
-				options.WriteErrorToConsole = true;
 
 				options.Scopes.Add("openid");
 				options.Scopes.Add("profile");

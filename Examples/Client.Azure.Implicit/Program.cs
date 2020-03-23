@@ -19,6 +19,8 @@ namespace Client.Azure.Implicit
 
 		public static void ConfigureServices(IServiceCollection services)
 		{
+			AuthConfig.WriteErrorToConsole = true;
+
 			services.AddOptions()
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
@@ -32,8 +34,6 @@ namespace Client.Azure.Implicit
 					// due to CORS error on /token endpoint, we can't use authentication code flow on Azure
 					// https://stackoverflow.com/questions/52839055/enabling-cors-on-azure-active-directory
 					////options.ResponseType = "code";
-
-					//options.WriteErrorToConsole = true;
 					options.RevokeAccessTokenOnSignout = true;
 
 

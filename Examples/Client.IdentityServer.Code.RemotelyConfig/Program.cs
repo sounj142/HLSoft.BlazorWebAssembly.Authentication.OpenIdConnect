@@ -23,6 +23,8 @@ namespace Client.IdentityServer.Code.RemotelyConfig
 
 		public static void ConfigureServices(IServiceCollection services)
 		{
+			//AuthConfig.AutomaticHideBodyWhenAuthenticating = false;
+
 			services.AddOptions()
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(async (provider) =>

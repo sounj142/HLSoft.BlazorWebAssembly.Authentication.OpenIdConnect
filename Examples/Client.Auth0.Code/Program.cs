@@ -1,6 +1,5 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
 using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Client.Auth0.Code
 {
-	public class Program
+    public class Program
 	{
 		public static async Task Main(string[] args)
 		{
@@ -22,6 +21,8 @@ namespace Client.Auth0.Code
 
 		public static void ConfigureServices(IServiceCollection services)
 		{
+			AuthConfig.WriteErrorToConsole = true;
+
 			services.AddOptions()
 				.AddAuthorizationCore()
 
@@ -33,8 +34,6 @@ namespace Client.Auth0.Code
 
 					options.ResponseType = "code";
 					//options.ResponseType = "token id_token";
-
-					options.WriteErrorToConsole = true;
 					options.RevokeAccessTokenOnSignout = false;
 
 					// because Auth0 don't offer End Session Endpoint in its well-known documentary, we need to
@@ -73,8 +72,6 @@ namespace Client.Auth0.Code
 			//	options.ClientId = "mbjoV5gM7AcRpslDFQyc6Qs6GjXPyPWa";
 
 			//	options.ResponseType = "code";
-
-			//	options.WriteErrorToConsole = true;
 			//	options.RevokeAccessTokenOnSignout = false;
 
 

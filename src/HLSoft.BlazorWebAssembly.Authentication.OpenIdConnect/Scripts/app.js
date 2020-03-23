@@ -57,7 +57,7 @@
 
 	function createUserManager(isCode) {
 		return isCode
-			? new Oidc.UserManager(prepareOidcConfig({ loadUserInfo: true, response_mode: "query" }))
+			? new Oidc.UserManager(prepareOidcConfig({ loadUserInfo: true, response_mode: 'query' }))
 			: new Oidc.UserManager(prepareOidcConfig());
 	}
 
@@ -81,19 +81,19 @@
 		mgr.signoutPopupCallback(false);
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.hideAllPage = function () {
-		document.body.style.display = "none";
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.setPageDisplayStatus = function (show) {
+		document.body.style.display = show ? 'block' : 'none';
 	}
 
 	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.silentOpenUrlInIframe = function (url, timeout) {
 		return new Promise((resolve, reject) => {
-			let iframe = document.createElement("iframe");
-			iframe.style.display = "none";
-			iframe.setAttribute("src", url);
+			let iframe = document.createElement('iframe');
+			iframe.style.display = 'none';
+			iframe.setAttribute('src', url);
 			document.body.appendChild(iframe);
 
 			let timer = window.setTimeout(() => {
-				reject(new Error("IFrame window timed out."));
+				reject(new Error('IFrame window timed out.'));
 			}, timeout);
 			iframe.onload = () => {
 				document.body.removeChild(iframe);

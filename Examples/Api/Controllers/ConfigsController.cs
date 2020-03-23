@@ -8,7 +8,7 @@ namespace Api.Controllers
     {
         public async Task<IActionResult> Get()
         {
-            await Task.Delay(5000);
+            await Task.Delay(1000);
             return new JsonResult(new
             {
                 Authority = "https://localhost:5000/",
