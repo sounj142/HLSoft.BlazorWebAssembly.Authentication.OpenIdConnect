@@ -143,7 +143,7 @@ namespace IdentityServer
                         "api_role",
                         "api",
                     },
-                    ////AllowOfflineAccess = true, 
+                    ////AllowOfflineAccess = true,
                     AccessTokenLifetime = 80,
                 },
 
@@ -160,6 +160,29 @@ namespace IdentityServer
                         "http://localhost:5004/signin-callback-oidc",
                     },
                     PostLogoutRedirectUris = { "http://localhost:5004/" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "api"
+                    }
+                },
+
+                new Client
+                {
+                    ClientId = "Client.Code.RemotelyConfig",
+                    ClientName = "Client.Code.RemotelyConfig",
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+                    RequirePkce = true,
+
+                    RedirectUris = {
+                        "http://localhost:5012/signin-callback-oidc",
+                    },
+                    PostLogoutRedirectUris = { "http://localhost:5012/" },
 
                     AllowedScopes =
                     {

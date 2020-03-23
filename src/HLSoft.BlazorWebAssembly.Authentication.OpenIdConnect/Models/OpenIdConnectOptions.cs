@@ -28,7 +28,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		/// <summary>
 		/// [Required] The scopes being requested from the OIDC/OAuth2 provider (oidc-client-js:scope)
 		/// </summary>
-		public ICollection<string> Scopes { get; } = new List<string>();
+		public ICollection<string> Scopes { get; set; } = new List<string>();
 		/// <summary>
 		/// Flag to control if additional identity data is loaded from the user info endpoint in order to populate the user's profile (oidc-client-js:loadUserInfo) 
 		/// Default: true
