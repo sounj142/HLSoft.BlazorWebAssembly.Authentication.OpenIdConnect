@@ -46,6 +46,7 @@ namespace IdentityServer
 
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
+                    RequirePkce = true,
 
                     RedirectUris = {
                         "http://localhost:5005/signin-callback-oidc",
@@ -95,6 +96,7 @@ namespace IdentityServer
 
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
+                    RequirePkce = true,
 
                     RedirectUris = {
                         "http://localhost:5006/fantastic-url-for-redirect",
@@ -141,8 +143,8 @@ namespace IdentityServer
                         "api_role",
                         "api",
                     },
-                    AllowOfflineAccess = true,
-                    AccessTokenLifetime = 50,
+                    ////AllowOfflineAccess = true, 
+                    AccessTokenLifetime = 80,
                 },
 
                 new Client

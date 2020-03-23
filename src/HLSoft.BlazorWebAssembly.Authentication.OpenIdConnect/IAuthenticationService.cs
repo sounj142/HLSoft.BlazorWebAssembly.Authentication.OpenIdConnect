@@ -35,7 +35,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		/// return true if current URI is one of special URIs for sign-in/sign-out features
 		/// </summary>
 		/// <returns></returns>
-		bool CurrentUriIsAuthenticationUri();
+		Task<bool> CurrentUriIsAuthenticationUri();
 
 		/// <summary>
 		/// in some special situation, we need to load an Url in an hidden Iframe. This will allow you to run that url, and

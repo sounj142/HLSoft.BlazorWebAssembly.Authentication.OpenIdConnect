@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System;
+using System.Threading.Tasks;
 
 namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 {
@@ -13,12 +13,18 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
         /// Add authentication services for HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
         /// </summary>
         public static IServiceCollection AddBlazoredOpenIdConnect(this IServiceCollection services,
+            Func<IServiceProvider, Task<OpenIdConnectOptions>> configureOptions)
+        {
+            return services.AddBlazoredOpenIdConnect<object, DefaultClaimsParser>(configureOptions);
+        }
+
+        /// <summary>
+        /// Add authentication services for HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
+        /// </summary>
+        public static IServiceCollection AddBlazoredOpenIdConnect(this IServiceCollection services,
             Action<OpenIdConnectOptions> configureOptions)
         {
-            return services
-                .AddSharedServices(configureOptions)
-                .AddSingleton<AuthenticationStateProvider, BlazorAuthenticationStateProvider<object>>()
-                .AddSingleton<IClaimsParser<object>, DefaultClaimsParser>();
+            return services.AddBlazoredOpenIdConnect<object, DefaultClaimsParser>(configureOptions);
         }
 
         /// <summary>
@@ -31,6 +37,22 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
             where TClaimsParser : class, IClaimsParser<TUser>
             where TUser : class
         {
+            Console.WriteLine("==== Tao OpenIdConnectOptionsYy ben tron extensions");
+            var options = new OpenIdConnectOptions();
+            configureOptions(options);
+            return services.AddBlazoredOpenIdConnect<TUser, TClaimsParser>(provider => Task.FromResult(options));
+        }
+
+        /// <summary>
+        /// Add authentication services for HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect using a custom ClaimsParser
+        /// </summary>
+        /// <typeparam name="TUser">The user type to store data get from [oidc-client].getUser() method</typeparam>
+        /// <typeparam name="TClaimsParser">The Claims Parser</typeparam>
+        public static IServiceCollection AddBlazoredOpenIdConnect<TUser, TClaimsParser>(this IServiceCollection services,
+            Func<IServiceProvider, Task<OpenIdConnectOptions>> configureOptions)
+            where TClaimsParser : class, IClaimsParser<TUser>
+            where TUser : class
+        {
             return services
                 .AddSharedServices(configureOptions)
                 .AddSingleton<AuthenticationStateProvider, BlazorAuthenticationStateProvider<TUser>>()
@@ -38,16 +60,19 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
         }
 
         private static IServiceCollection AddSharedServices(this IServiceCollection services,
-            Action<OpenIdConnectOptions> configureOptions)
+            Func<IServiceProvider, Task<OpenIdConnectOptions>> configureOptions)
         {
-            services.Configure(configureOptions);
-            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<OpenIdConnectOptions>>().Value);
+            //services.Configure(configureOptions);
+            services.AddSingleton(async provider => await configureOptions(provider));
 
-            services.AddSingleton(resolver =>
+            services.AddSingleton(async provider =>
             {
-                var authOptions = resolver.GetRequiredService<OpenIdConnectOptions>();
-                var navigationManager = resolver.GetRequiredService<NavigationManager>();
-                return Utils.CreateClientOptionsConfigData(authOptions, navigationManager);
+                Console.WriteLine("==== Tao ClientOptionsXx");
+                var authOptionsTask = provider.GetRequiredService<Task<OpenIdConnectOptions>>();
+                var authOptions = await authOptionsTask;
+                var navigationManager = provider.GetRequiredService<NavigationManager>();
+                var result = Utils.CreateClientOptionsConfigData(authOptions, navigationManager);
+                return result;
             });
             return services.AddSingleton<IAuthenticationService, AuthenticationService>()
                 .AddSingleton<AuthenticationEventHandler>()

@@ -14,8 +14,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 	public class BlazorAuthenticationStateProvider<TUser> : AuthenticationStateProvider, IAuthenticationStateProvider where TUser: class
 	{
 		private readonly IJSRuntime _jsRuntime;
-		private readonly ClientOptions _clientOptions;
-		private readonly OpenIdConnectOptions _openIdConnectOptions;
+		private readonly Task<ClientOptions> _clientOptionsTask;
+		private readonly Task<OpenIdConnectOptions> _openIdConnectOptionsTask;
 		private readonly IServiceProvider _serviceProvider;
 		private readonly NavigationManager _navigationManager;
 		private readonly IClaimsParser<TUser> _claimsParser;
@@ -25,18 +25,18 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		public BlazorAuthenticationStateProvider(
 			IJSRuntime jsRuntime, 
 			NavigationManager navigationManager, 
-			ClientOptions clientOptions, 
+			Task<ClientOptions> clientOptionsTask, 
 			IClaimsParser<TUser> claimsParser, 
 			AuthenticationEventHandler authenticationEventHandler,
-			OpenIdConnectOptions openIdConnectOptions,
+			Task<OpenIdConnectOptions> openIdConnectOptionsTask,
 			IServiceProvider serviceProvider)
 		{
 			_jsRuntime = jsRuntime;
 			_navigationManager = navigationManager;
-			_clientOptions = clientOptions;
+			_clientOptionsTask = clientOptionsTask;
 			_claimsParser = claimsParser;
 			_authenticationEventHandler = authenticationEventHandler;
-			_openIdConnectOptions = openIdConnectOptions;
+			_openIdConnectOptionsTask = openIdConnectOptionsTask;
 			_serviceProvider = serviceProvider;
 		}
 
@@ -45,7 +45,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			await ProcessPreviousActionCode();
 			if (!await HandleKnownUri())
 			{
-				await Utils.ConfigOidcAsync(_jsRuntime, _clientOptions);
+				var clientOptions = await _clientOptionsTask;
+				await Utils.ConfigOidcAsync(_jsRuntime, clientOptions);
 			}
 		}
 
@@ -94,14 +95,15 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
 		private async Task<bool> HandleSigninCallbackUri()
 		{
-			if (Utils.CurrentUriIs(_clientOptions.redirect_uri, _navigationManager))
+			var clientOptions = await _clientOptionsTask;
+			if (Utils.CurrentUriIs(clientOptions.redirect_uri, _navigationManager))
 			{
 				string returnUrl = null;
 				try
 				{
 					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 					returnUrl = await Utils.GetAndRemoveSessionStorageData(_jsRuntime, "_returnUrl");
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninCallback, _clientOptions.IsCode);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninCallback, clientOptions.IsCode);
 				}
 				catch (Exception err)
 				{
@@ -109,7 +111,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				}
 
 				await Utils.SetSessionStorageData(_jsRuntime, "_previousActionCode", Constants.SignedInSuccess);
-				_navigationManager.NavigateTo(returnUrl ?? _clientOptions.post_logout_redirect_uri, true);
+				_navigationManager.NavigateTo(returnUrl ?? clientOptions.post_logout_redirect_uri, true);
 
 				return true;
 			}
@@ -118,7 +120,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
 		private async Task<bool> HandleSilentCallbackUri()
 		{
-			if (Utils.CurrentUriIs(_clientOptions.silent_redirect_uri, _navigationManager))
+			var clientOptions = await _clientOptionsTask;
+			if (Utils.CurrentUriIs(clientOptions.silent_redirect_uri, _navigationManager))
 			{
 				try
 				{
@@ -135,12 +138,13 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
 		private async Task<bool> HandleSigninPopupUri()
 		{
-			if (Utils.CurrentUriIs(_clientOptions.popup_redirect_uri, _navigationManager))
+			var clientOptions = await _clientOptionsTask;
+			if (Utils.CurrentUriIs(clientOptions.popup_redirect_uri, _navigationManager))
 			{
 				try
 				{
 					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup, _clientOptions.IsCode);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSigninPopup, clientOptions.IsCode);
 					RunAsyncTaskToClosePopup(1000);
 				}
 				catch (Exception err)
@@ -154,12 +158,13 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
 		private async Task<bool> HandleSignoutPopupUri()
 		{
-			if (Utils.CurrentUriIs(_clientOptions.popup_post_logout_redirect_uri, _navigationManager))
+			var clientOptions = await _clientOptionsTask;
+			if (Utils.CurrentUriIs(clientOptions.popup_post_logout_redirect_uri, _navigationManager))
 			{
 				try
 				{
 					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
-					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSignoutPopup, _clientOptions.IsCode);
+					await _jsRuntime.InvokeVoidAsync(Constants.ProcessSignoutPopup, clientOptions.IsCode);
 					RunAsyncTaskToClosePopup(500);
 				}
 				catch (Exception err)
@@ -196,14 +201,16 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
 		private async Task<bool> HandleEndSessionEndpoint()
 		{
-			if (Utils.CurrentUriIs(_clientOptions.endSessionEndpoint, _navigationManager))
+			var openIdConnectOptions = await _openIdConnectOptionsTask;
+			var clientOptions = await _clientOptionsTask;
+			if (Utils.CurrentUriIs(clientOptions.endSessionEndpoint, _navigationManager))
 			{
 				try
 				{
 					await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
-					if (_openIdConnectOptions.EndSessionEndpointProcess != null)
+					if (openIdConnectOptions.EndSessionEndpointProcess != null)
 					{
-						await _openIdConnectOptions.EndSessionEndpointProcess.Invoke(_serviceProvider);
+						await openIdConnectOptions.EndSessionEndpointProcess.Invoke(_serviceProvider);
 					}
 
 					var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
@@ -215,7 +222,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 					}
 					else
 					{
-						_navigationManager.NavigateTo(_clientOptions.post_logout_redirect_uri, true);
+						_navigationManager.NavigateTo(clientOptions.post_logout_redirect_uri, true);
 					}
 				}
 				catch (Exception err)
@@ -229,7 +236,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
 		private async Task<bool> HandleDoNothingUri()
 		{
-			if (Utils.CurrentUriIs(_clientOptions.doNothingUri, _navigationManager))
+			var clientOptions = await _clientOptionsTask;
+			if (Utils.CurrentUriIs(clientOptions.doNothingUri, _navigationManager))
 			{
 				await _jsRuntime.InvokeVoidAsync(Constants.HideAllPage);
 				return true;

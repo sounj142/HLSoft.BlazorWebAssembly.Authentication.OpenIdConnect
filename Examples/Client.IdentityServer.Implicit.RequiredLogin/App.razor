@@ -26,6 +26,6 @@
     protected override async Task OnInitializedAsync()
     {
         await authenticationService.RequireAuthenticationAsync();
-        isAuthenticationLink = authenticationService.CurrentUriIsAuthenticationUri();
+        isAuthenticationLink = await authenticationService.CurrentUriIsAuthenticationUri();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
 using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,11 +62,14 @@ namespace Client.Auth0.Code
 
 				//	options.Scope.Add("openid");
 				//	options.Scope.Add("profile");
-				//})
+				//});
 
-				.AddBlazoredOpenIdConnect(options =>
+				.AddBlazoredOpenIdConnect(provider =>
 				{
+					System.Console.WriteLine("==== Tao OpenIdConnectOptionsYy");
+
 					var authorityUrl = "https://hoang-luong.auth0.com";
+					var options = new OpenIdConnectOptions();
 					options.Authority = authorityUrl;
 
 					options.ClientId = "mbjoV5gM7AcRpslDFQyc6Qs6GjXPyPWa";
@@ -75,9 +79,12 @@ namespace Client.Auth0.Code
 					options.WriteErrorToConsole = true;
 					options.RevokeAccessTokenOnSignout = false;
 
+
+					var navigationManager = provider.GetService<NavigationManager>();
+					var logoutRedirectUrl = navigationManager.GetAbsoluteUri(options.SignedOutRedirectUri);
 					var logoutUrl = $"{authorityUrl}/v2/logout";
 					logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "client_id", options.ClientId);
-					logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "returnTo", "http://localhost:5007/");
+					logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "returnTo", logoutRedirectUrl);
 					options.Metadata = new OidcMetadata
 					{
 						Issuer = $"{authorityUrl}/",
@@ -95,6 +102,7 @@ namespace Client.Auth0.Code
 
 					options.Scope.Add("openid");
 					options.Scope.Add("profile");
+					return Task.FromResult(options);
 				});
 		}
 	}

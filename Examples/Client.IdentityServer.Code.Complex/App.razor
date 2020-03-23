@@ -26,9 +26,9 @@
 @code  {
     private bool isAuthenticationLink = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        isAuthenticationLink = authenticationService.CurrentUriIsAuthenticationUri();
+        isAuthenticationLink = await authenticationService.CurrentUriIsAuthenticationUri();
 
         authenticationEventHandler.SignInSuccessEvent += (obj, e) => {
             Toaster.Add("Sign in success!", MatToastType.Success);

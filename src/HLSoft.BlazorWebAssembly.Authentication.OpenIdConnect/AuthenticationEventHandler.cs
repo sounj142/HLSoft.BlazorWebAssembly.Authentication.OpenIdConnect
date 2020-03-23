@@ -28,12 +28,11 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		/// </summary>
 		public event EventHandler SignOutSuccessEvent;
 
-		private readonly OpenIdConnectOptions _openIdConnectOptions;
+		private readonly Task<OpenIdConnectOptions> _openIdConnectOptionsTask;
 
-		public AuthenticationEventHandler(OpenIdConnectOptions openIdConnectOptions)
+		public AuthenticationEventHandler(Task<OpenIdConnectOptions> openIdConnectOptions)
 		{
-			_openIdConnectOptions = openIdConnectOptions;
-
+			_openIdConnectOptionsTask = openIdConnectOptions;
 			DotNetEndPoint.Initialize(this);
 		}
 		/// <summary>
@@ -84,12 +83,13 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 					?.Trim();
 			if (IsConcernError(errorMsg))
 			{
-				if (_openIdConnectOptions.WriteErrorToConsole)
+				Task.Run(async () =>
 				{
-					Console.Error.WriteLine(err);
-				}
-				Task.Run(() =>
-				{
+					var openIdConnectOptions = await _openIdConnectOptionsTask;
+					if (openIdConnectOptions.WriteErrorToConsole)
+					{
+						Console.Error.WriteLine(err);
+					}
 					eventHandler?.Invoke(this, errorMsg);
 				});
 			}

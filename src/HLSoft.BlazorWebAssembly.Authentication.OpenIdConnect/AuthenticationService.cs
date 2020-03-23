@@ -12,20 +12,20 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		private readonly IAuthenticationStateProvider _authenticationStateProvider;
 		private readonly AuthenticationEventHandler _authenticationEventHandler;
 		private readonly NavigationManager _navigationManager;
-		private readonly ClientOptions _clientOptions;
+		private readonly Task<ClientOptions> _clientOptionsTask;
 
 		public AuthenticationService(
 			IJSRuntime jsRuntime,
 			IAuthenticationStateProvider authenticationStateProvider,
 			AuthenticationEventHandler authenticationEventHandler,
 			NavigationManager navigationManager,
-			ClientOptions clientOptions)
+			Task<ClientOptions> clientOptions)
 		{
 			_jsRuntime = jsRuntime;
 			_authenticationStateProvider = authenticationStateProvider;
 			_authenticationEventHandler = authenticationEventHandler;
 			_navigationManager = navigationManager;
-			_clientOptions = clientOptions;
+			_clientOptionsTask = clientOptions;
 		}
 
 		/// <summary>
@@ -89,7 +89,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
 		public async Task RequireAuthenticationAsync()
 		{
-			if (!CurrentUriIsAuthenticationUri())
+			if (!await CurrentUriIsAuthenticationUri())
 			{
 				var authenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
 				if (!authenticationState.User.Identity.IsAuthenticated)
@@ -99,14 +99,15 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			}
 		}
 
-		public bool CurrentUriIsAuthenticationUri()
+		public async Task<bool> CurrentUriIsAuthenticationUri()
 		{
-			return Utils.CurrentUriIs(_clientOptions.redirect_uri, _navigationManager) ||
-				Utils.CurrentUriIs(_clientOptions.silent_redirect_uri, _navigationManager) ||
-				Utils.CurrentUriIs(_clientOptions.popup_redirect_uri, _navigationManager) ||
-				Utils.CurrentUriIs(_clientOptions.popup_post_logout_redirect_uri, _navigationManager) ||
-				Utils.CurrentUriIs(_clientOptions.endSessionEndpoint, _navigationManager) ||
-				Utils.CurrentUriIs(_clientOptions.doNothingUri, _navigationManager);
+			var clientOptions = await _clientOptionsTask;
+			return Utils.CurrentUriIs(clientOptions.redirect_uri, _navigationManager) ||
+				Utils.CurrentUriIs(clientOptions.silent_redirect_uri, _navigationManager) ||
+				Utils.CurrentUriIs(clientOptions.popup_redirect_uri, _navigationManager) ||
+				Utils.CurrentUriIs(clientOptions.popup_post_logout_redirect_uri, _navigationManager) ||
+				Utils.CurrentUriIs(clientOptions.endSessionEndpoint, _navigationManager) ||
+				Utils.CurrentUriIs(clientOptions.doNothingUri, _navigationManager);
 		}
 
 		public async Task SilentOpenUrlInIframe(string url, int timeout = 10000)
