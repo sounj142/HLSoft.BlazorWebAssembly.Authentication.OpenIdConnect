@@ -27,11 +27,8 @@ namespace Client.IdentityServer.Code.RemotelyConfig
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(async (provider) =>
 				{
-					Console.WriteLine("===== chay nhe");
 					var httpClient = provider.GetRequiredService<HttpClient>();
 					var result = await httpClient.GetJsonAsync<OpenIdConnectOptions>("http://localhost:5001/Configs");
-
-					Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(result));
 					return result;
 				});
 

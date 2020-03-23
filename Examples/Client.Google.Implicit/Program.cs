@@ -23,9 +23,9 @@ namespace Client.Google.Implicit
 				.AddAuthorizationCore()
 				.AddBlazoredOpenIdConnect(options =>
 				{
-					options.Authority = "<identity provider url>";
+					options.Authority = "https://accounts.google.com/";
 
-					options.ClientId = "<client id>";
+					options.ClientId = "802236688604-pj1blf39tv42cn02c7bnajdinaf6f9p3.apps.googleusercontent.com";
 
 					options.ResponseType = "token id_token";
 					// google don't fully support authentication code flow and required client secret, so don't use this flow. Use implicit flow.

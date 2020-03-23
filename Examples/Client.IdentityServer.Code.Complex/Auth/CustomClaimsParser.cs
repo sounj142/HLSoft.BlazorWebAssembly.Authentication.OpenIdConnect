@@ -28,7 +28,6 @@ namespace Client.IdentityServer.Code.Complex.Auth
 			claims.Add(new Claim("access_token", user.access_token));
 			claims.Add(new Claim("expires_at", user.expires_at.ToString()));
 			claims.Add(new Claim("id_token", user.id_token));
-			claims.Add(new Claim("refresh_token", user.refresh_token));
 			claims.Add(new Claim("session_state", user.session_state));
 			claims.Add(new Claim("token_type", user.token_type));
 			claims.AddRange(user.scope.Split(' ', StringSplitOptions.RemoveEmptyEntries)

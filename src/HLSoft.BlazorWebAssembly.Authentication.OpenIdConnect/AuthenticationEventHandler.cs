@@ -85,12 +85,12 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			{
 				Task.Run(async () =>
 				{
+					eventHandler?.Invoke(this, errorMsg);
 					var openIdConnectOptions = await _openIdConnectOptionsTask;
 					if (openIdConnectOptions.WriteErrorToConsole)
 					{
 						Console.Error.WriteLine(err);
 					}
-					eventHandler?.Invoke(this, errorMsg);
 				});
 			}
 		}

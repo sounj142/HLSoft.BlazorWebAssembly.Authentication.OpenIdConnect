@@ -37,7 +37,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
             where TClaimsParser : class, IClaimsParser<TUser>
             where TUser : class
         {
-            Console.WriteLine("==== Tao OpenIdConnectOptionsYy ben tron extensions");
             var options = new OpenIdConnectOptions();
             configureOptions(options);
             return services.AddBlazoredOpenIdConnect<TUser, TClaimsParser>(provider => Task.FromResult(options));
@@ -67,7 +66,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
             services.AddSingleton(async provider =>
             {
-                Console.WriteLine("==== Tao ClientOptionsXx");
                 var authOptionsTask = provider.GetRequiredService<Task<OpenIdConnectOptions>>();
                 var authOptions = await authOptionsTask;
                 var navigationManager = provider.GetRequiredService<NavigationManager>();

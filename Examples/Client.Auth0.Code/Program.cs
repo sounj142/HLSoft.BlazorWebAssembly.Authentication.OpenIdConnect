@@ -25,76 +25,36 @@ namespace Client.Auth0.Code
 			services.AddOptions()
 				.AddAuthorizationCore()
 
-				//.AddBlazoredOpenIdConnect(options =>
-				//{
-				//	options.Authority = "https://hoang-luong.auth0.com";
-
-				//	options.ClientId = "mbjoV5gM7AcRpslDFQyc6Qs6GjXPyPWa";
-
-				//	options.ResponseType = "code";
-				//	//options.ResponseType = "token id_token";
-
-				//	options.WriteErrorToConsole = true;
-				//	options.RevokeAccessTokenOnSignout = false;
-
-				//	// because Auth0 don't offer End Session Endpoint in its well-known documentary, we need to
-				//	// implement a custom url to process this feature
-				//	options.EndSessionEndpoint = "/oauth0-logout";
-				//	options.EndSessionEndpointProcess = async provider =>
-				//	{
-				//		var config = provider.GetService<ClientOptions>();
-				//		var logoutUrl = $"{config.authority}/v2/logout";
-				//		logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "client_id", config.client_id);
-				//		logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "returnTo", config.doNothingUri);
-				//		var authenticationService = provider.GetService<IAuthenticationService>();
-				//		await authenticationService.SilentOpenUrlInIframe(logoutUrl);
-				//	};
-
-				//	// request api resource
-				//	//options.ExtraQueryParams = new
-				//	//{
-				//	//	audience = "weather_forecast"
-				//	//};
-
-				//	// Note: you need to add urls bellow and "/oidc-nothing" to the redirect urls configuration in Auth0
-				//	options.PopupSignInRedirectUri = "/signin-popup-redirect";
-				//	options.PopupSignOutRedirectUri = "/signout-popup-redirect";
-
-				//	options.Scope.Add("openid");
-				//	options.Scope.Add("profile");
-				//});
-
-				.AddBlazoredOpenIdConnect(provider =>
+				.AddBlazoredOpenIdConnect(options =>
 				{
-					System.Console.WriteLine("==== Tao OpenIdConnectOptionsYy");
-
-					var authorityUrl = "https://hoang-luong.auth0.com";
-					var options = new OpenIdConnectOptions();
-					options.Authority = authorityUrl;
+					options.Authority = "https://hoang-luong.auth0.com";
 
 					options.ClientId = "mbjoV5gM7AcRpslDFQyc6Qs6GjXPyPWa";
 
 					options.ResponseType = "code";
+					//options.ResponseType = "token id_token";
 
 					options.WriteErrorToConsole = true;
 					options.RevokeAccessTokenOnSignout = false;
 
-
-					var navigationManager = provider.GetService<NavigationManager>();
-					var logoutRedirectUrl = navigationManager.GetAbsoluteUri(options.SignedOutRedirectUri);
-					var logoutUrl = $"{authorityUrl}/v2/logout";
-					logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "client_id", options.ClientId);
-					logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "returnTo", logoutRedirectUrl);
-					options.Metadata = new OidcMetadata
+					// because Auth0 don't offer End Session Endpoint in its well-known documentary, we need to
+					// implement a custom url to process this feature
+					options.EndSessionEndpoint = "/oauth0-logout";
+					options.EndSessionEndpointProcess = async provider =>
 					{
-						Issuer = $"{authorityUrl}/",
-						AuthorizationEndpoint = $"{authorityUrl}/authorize?audience=weather_forecast",
-						JwksUri = $"{authorityUrl}/.well-known/jwks.json",
-						TokenEndpoint = $"{authorityUrl}/oauth/token",
-						UserinfoEndpoint = $"{authorityUrl}/userinfo",
-						EndSessionEndpoint = logoutUrl,
-						RevocationEndpoint = $"{authorityUrl}/oauth/revoke",
+						var config = await provider.GetService<Task<ClientOptions>>();
+						var logoutUrl = $"{config.authority}/v2/logout";
+						logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "client_id", config.client_id);
+						logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "returnTo", config.doNothingUri);
+						var authenticationService = provider.GetService<IAuthenticationService>();
+						await authenticationService.SilentOpenUrlInIframe(logoutUrl);
 					};
+
+					// request api resource
+					//options.ExtraQueryParams = new
+					//{
+					//	audience = "weather_forecast"
+					//};
 
 					// Note: you need to add urls bellow and "/oidc-nothing" to the redirect urls configuration in Auth0
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";
@@ -102,8 +62,46 @@ namespace Client.Auth0.Code
 
 					options.Scopes.Add("openid");
 					options.Scopes.Add("profile");
-					return Task.FromResult(options);
 				});
+
+			//.AddBlazoredOpenIdConnect(provider =>
+			//{
+			//	var authorityUrl = "https://hoang-luong.auth0.com";
+			//	var options = new OpenIdConnectOptions();
+			//	options.Authority = authorityUrl;
+
+			//	options.ClientId = "mbjoV5gM7AcRpslDFQyc6Qs6GjXPyPWa";
+
+			//	options.ResponseType = "code";
+
+			//	options.WriteErrorToConsole = true;
+			//	options.RevokeAccessTokenOnSignout = false;
+
+
+			//	var navigationManager = provider.GetService<NavigationManager>();
+			//	var logoutRedirectUrl = navigationManager.GetAbsoluteUri(options.SignedOutRedirectUri);
+			//	var logoutUrl = $"{authorityUrl}/v2/logout";
+			//	logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "client_id", options.ClientId);
+			//	logoutUrl = QueryHelpers.AddQueryString(logoutUrl, "returnTo", logoutRedirectUrl);
+			//	options.Metadata = new OidcMetadata
+			//	{
+			//		Issuer = $"{authorityUrl}/",
+			//		AuthorizationEndpoint = $"{authorityUrl}/authorize", // $"{authorityUrl}/authorize?audience=weather_forecast",
+			//		JwksUri = $"{authorityUrl}/.well-known/jwks.json",
+			//		TokenEndpoint = $"{authorityUrl}/oauth/token",
+			//		UserinfoEndpoint = $"{authorityUrl}/userinfo",
+			//		EndSessionEndpoint = logoutUrl,
+			//		RevocationEndpoint = $"{authorityUrl}/oauth/revoke",
+			//	};
+
+			//	// Note: you need to add urls bellow and "/oidc-nothing" to the redirect urls configuration in Auth0
+			//	options.PopupSignInRedirectUri = "/signin-popup-redirect";
+			//	options.PopupSignOutRedirectUri = "/signout-popup-redirect";
+
+			//	options.Scopes.Add("openid");
+			//	options.Scopes.Add("profile");
+			//	return Task.FromResult(options);
+			//});
 		}
 	}
 }

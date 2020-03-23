@@ -56,7 +56,6 @@ namespace Client.IdentityServer.Code.Complex
 				options.Scopes.Add("address");
 				options.Scopes.Add("api_role");
 				options.Scopes.Add("api");
-				options.Scopes.Add("offline_access");
 			});
 
 			services.AddMatToaster(config =>

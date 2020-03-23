@@ -1,9 +1,28 @@
 ﻿@inject IAuthenticationService authenticationService
+@inject Task<HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models.ClientOptions> clientOptionsTask
 
-@code 
+@if (_displayChildContent)
 {
-	protected override Task OnInitializedAsync()
+	@ChildContent
+}
+
+@code
+{
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	private bool _displayChildContent = false;
+
+	protected override async Task OnInitializedAsync()
 	{
-		return authenticationService.SignInAsync();
+		if (!await authenticationService.CurrentUriIsAuthenticationUri())
+		{
+			_displayChildContent = true;
+			var clientOptions = await clientOptionsTask;
+			if (!string.IsNullOrWhiteSpace(clientOptions.redirect_uri))
+			{
+				await authenticationService.SignInAsync();
+			}
+		}
 	}
 }
