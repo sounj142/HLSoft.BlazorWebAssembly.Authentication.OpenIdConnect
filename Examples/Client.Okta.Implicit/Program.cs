@@ -36,8 +36,8 @@ namespace Client.Okta.Implicit
 					options.PopupSignInRedirectUri = "/signin-popup-redirect";
 					options.PopupSignOutRedirectUri = "/signout-popup-redirect";
 
-					options.Scope.Add("openid");
-					options.Scope.Add("profile");
+					options.Scopes.Add("openid");
+					options.Scopes.Add("profile");
 				});
 		}
 	}

@@ -50,13 +50,13 @@ namespace Client.IdentityServer.Code.Complex
 
 				options.WriteErrorToConsole = true;
 
-				options.Scope.Add("openid");
-				options.Scope.Add("profile");
-				options.Scope.Add("email");
-				options.Scope.Add("address");
-				options.Scope.Add("api_role");
-				options.Scope.Add("api");
-				options.Scope.Add("offline_access");
+				options.Scopes.Add("openid");
+				options.Scopes.Add("profile");
+				options.Scopes.Add("email");
+				options.Scopes.Add("address");
+				options.Scopes.Add("api_role");
+				options.Scopes.Add("api");
+				options.Scopes.Add("offline_access");
 			});
 
 			services.AddMatToaster(config =>

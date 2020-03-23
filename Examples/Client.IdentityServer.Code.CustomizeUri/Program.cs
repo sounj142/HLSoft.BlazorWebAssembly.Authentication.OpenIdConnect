@@ -33,9 +33,9 @@ namespace Client.IdentityServer.Code.CustomizeUri
 					options.PopupSignInRedirectUri = "/wonderful-link-for-popup-login";
 					options.PopupSignOutRedirectUri = "/sign-out-popup-here";
 
-					options.Scope.Add("openid");
-					options.Scope.Add("profile");
-					options.Scope.Add("api");
+					options.Scopes.Add("openid");
+					options.Scopes.Add("profile");
+					options.Scopes.Add("api");
 				});
 
 			services.AddHttpClient<WeatherForecastService>(client =>

@@ -33,9 +33,9 @@ namespace Client.IdentityServer.Implicit.UsePopup
 					options.PopupSignInRedirectUri = "/signin-popup-oidc";
 					options.PopupSignOutRedirectUri = "/signout-popup-oidc";
 
-					options.Scope.Add("openid");
-					options.Scope.Add("profile");
-					options.Scope.Add("api");
+					options.Scopes.Add("openid");
+					options.Scopes.Add("profile");
+					options.Scopes.Add("api");
 				});
 
 			services.AddHttpClient<WeatherForecastService>(client =>
