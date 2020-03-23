@@ -1,5 +1,4 @@
-﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,11 +27,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		/// </summary>
 		public event EventHandler SignOutSuccessEvent;
 
-		private readonly Task<OpenIdConnectOptions> _openIdConnectOptionsTask;
-
-		public AuthenticationEventHandler(Task<OpenIdConnectOptions> openIdConnectOptions)
+		public AuthenticationEventHandler()
 		{
-			_openIdConnectOptionsTask = openIdConnectOptions;
 			DotNetEndPoint.Initialize(this);
 		}
 		/// <summary>
