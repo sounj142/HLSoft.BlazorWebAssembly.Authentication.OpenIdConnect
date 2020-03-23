@@ -45,6 +45,17 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 				extraTokenParams = authOption.ExtraTokenParams,
 				endSessionEndpoint = navigationManager.GetAbsoluteUri(authOption.EndSessionEndpoint),
 				doNothingUri = navigationManager.GetAbsoluteUri(authOption.DoNothingUri),
+				metadata = authOption.Metadata == null ? null : new ClientOidcMetadata
+				{
+					issuer = authOption.Metadata.Issuer,
+					authorization_endpoint = authOption.Metadata.AuthorizationEndpoint,
+					userinfo_endpoint = authOption.Metadata.UserinfoEndpoint,
+					token_endpoint = authOption.Metadata.TokenEndpoint,
+					check_session_iframe = authOption.Metadata.CheckSessionIframe,
+					end_session_endpoint = authOption.Metadata.EndSessionEndpoint,
+					revocation_endpoint = authOption.Metadata.RevocationEndpoint,
+					jwks_uri = authOption.Metadata.JwksUri,
+				}
 			};
 		}
 

@@ -144,6 +144,53 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		/// Default: "oidc-nothing"
 		/// </summary>
 		public string DoNothingUri { get; set; } = "/oidc-nothing";
-			//"/oidc-nothing";
+
+		/// <summary>
+		/// manually configure OIDC/OAuth2 provider metadata endpoints
+		/// </summary>
+		public OidcMetadata Metadata { get; set; }
+	}
+
+	public class OidcMetadata
+	{
+		/// <summary>
+		/// The fully qualified issuer URL of the server
+		/// </summary>
+		public string Issuer { get; set; }
+
+		/// <summary>
+		/// The fully qualified URL of the server’s authorization endpoint defined by RFC 6749
+		/// </summary>
+		public string AuthorizationEndpoint { get; set; }
+
+		/// <summary>
+		/// The OpenID Connect UserInfo endpoint URL.
+		/// </summary>
+		public string UserinfoEndpoint { get; set; }
+
+		/// <summary>
+		///  The fully qualified URL of the server’s token endpoint defined by RFC 6749
+		/// </summary>
+		public string TokenEndpoint { get; set; }
+
+		/// <summary>
+		/// The OpenID Connect check session iframe URL, omitted if disabled.
+		/// </summary>
+		public string CheckSessionIframe { get; set; }
+
+		/// <summary>
+		/// The OpenID Connect logout endpoint URL
+		/// </summary>
+		public string EndSessionEndpoint { get; set; }
+
+		/// <summary>
+		/// The fully qualified URL of the server’s revocation endpoint defined by OAuth 2.0 Authorization Server Metadata (and sort of in OAuth 2.0 Token Revocation)
+		/// </summary>
+		public string RevocationEndpoint { get; set; }
+
+		/// <summary>
+		/// The fully qualified URI of the server’s public key in JSON Web Key Set (JWKS) format
+		/// </summary>
+		public string JwksUri { get; set; }
 	}
 }

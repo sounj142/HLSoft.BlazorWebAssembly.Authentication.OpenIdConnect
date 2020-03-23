@@ -28,7 +28,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			ClientOptions clientOptions, 
 			IClaimsParser<TUser> claimsParser, 
 			AuthenticationEventHandler authenticationEventHandler,
-			HttpClient httpClient,
 			OpenIdConnectOptions openIdConnectOptions,
 			IServiceProvider serviceProvider)
 		{

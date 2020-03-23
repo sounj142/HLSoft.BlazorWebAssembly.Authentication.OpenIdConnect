@@ -33,6 +33,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 
 		public string endSessionEndpoint { get; set; }
 		public string doNothingUri { get; set; }
+		public ClientOidcMetadata metadata { get; set; }
 
 		public bool IsCode
 		{
@@ -43,5 +44,17 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 					.Any(c => c == "code");
 			}
 		}
+	}
+
+	public class ClientOidcMetadata
+	{
+		public string issuer { get; set; }
+		public string authorization_endpoint { get; set; }
+		public string userinfo_endpoint { get; set; }
+		public string token_endpoint { get; set; }
+		public string check_session_iframe { get; set; }
+		public string end_session_endpoint { get; set; }
+		public string revocation_endpoint { get; set; }
+		public string jwks_uri { get; set; }
 	}
 }
