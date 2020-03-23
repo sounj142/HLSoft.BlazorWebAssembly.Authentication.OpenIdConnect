@@ -6,7 +6,7 @@
     <RootNamespace>HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect</RootNamespace>
     <PackageId>HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect</PackageId>
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>0.6.1-Preview2</Version>
+    <Version>0.7.0-Preview3</Version>
     <Authors>Hoang Luong</Authors>
     <Copyright>Copyright 2020 (c) Hoang Luong. All rights reserved.</Copyright>
     <Description>An OpenIdConnect library for Blazor WebAssembly. This library is a brief wrapper of oidc-client-js (https://github.com/IdentityModel/oidc-client-js)</Description>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npx minify ./Scripts/app.js &gt; ./wwwroot/app.min.js" />
+    <Exec Command="npx minify ./Scripts/app.js &gt; ./wwwroot/app.min.js" ContinueOnError="true" />
   </Target>
 
 </Project>

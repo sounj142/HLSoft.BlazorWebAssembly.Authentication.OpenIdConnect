@@ -131,7 +131,7 @@ public class WeatherForecast
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    <h1>Sorry, you're not authorized to view this page.</h1>
+                    <RedirectToLogin />
                 </NotAuthorized>
             </AuthorizeRouteView>
         </Found>
@@ -157,8 +157,8 @@ public class WeatherForecast
 -	Open wwwroot/index.html, add these script elements ( place it after blazor.webassembly.js script )
 
 ```html
-<script src="/_content/HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect/oidc-client.min.js"></script>
-<script src="/_content/HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect/app.js"></script>
+<script src="_content/HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect/oidc-client.min.js"></script>
+<script src="_content/HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect/app.min.js"></script>
 ```
 
 ### Shared/NavMenu.razor
