@@ -55,7 +55,8 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 					end_session_endpoint = authOption.Metadata.EndSessionEndpoint,
 					revocation_endpoint = authOption.Metadata.RevocationEndpoint,
 					jwks_uri = authOption.Metadata.JwksUri,
-				}
+				},
+				signingKeys = authOption.SigningKeys,
 			};
 		}
 

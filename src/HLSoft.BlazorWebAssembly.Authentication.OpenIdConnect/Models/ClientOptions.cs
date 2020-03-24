@@ -34,6 +34,7 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		public string endSessionEndpoint { get; set; }
 		public string doNothingUri { get; set; }
 		public ClientOidcMetadata metadata { get; set; }
+		public object signingKeys { get; set; }
 
 		public bool IsCode
 		{

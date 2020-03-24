@@ -144,6 +144,11 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models
 		/// manually configure OIDC/OAuth2 provider metadata endpoints
 		/// </summary>
 		public OidcMetadata Metadata { get; set; }
+
+		/// <summary>
+		/// which is the keys property of the jwks_uri endpoint
+		/// </summary>
+		public object SigningKeys { get; set; }
 	}
 
 	public class OidcMetadata
