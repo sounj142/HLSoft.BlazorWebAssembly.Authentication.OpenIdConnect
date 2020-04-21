@@ -1,8 +1,8 @@
 ﻿using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Client.IdentityServer.Code.CustomizeUri
@@ -21,7 +21,7 @@ namespace Client.IdentityServer.Code.CustomizeUri
         public async Task<IList<WeatherForecast>> GetAll()
         {
             await _stateProvider.SetAuthorizationHeader(_httpClient);
-            return await _httpClient.GetJsonAsync<IList<WeatherForecast>>("WeatherForecast");
+            return await _httpClient.GetFromJsonAsync<IList<WeatherForecast>>("WeatherForecast");
         }
     }
 

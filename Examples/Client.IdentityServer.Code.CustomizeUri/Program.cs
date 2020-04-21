@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect;
 using System;
+using System.Net.Http;
 
 namespace Client.IdentityServer.Code.CustomizeUri
 {
@@ -14,7 +15,7 @@ namespace Client.IdentityServer.Code.CustomizeUri
             ConfigureServices(builder.Services);
 
             builder.RootComponents.Add<App>("app");
-			builder.Services.AddBaseAddressHttpClient();
+			builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 			await builder.Build().RunAsync();
         }
 

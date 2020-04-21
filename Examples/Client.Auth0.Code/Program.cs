@@ -3,6 +3,8 @@ using HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect.Models;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Client.Auth0.Code
@@ -15,7 +17,7 @@ namespace Client.Auth0.Code
 			ConfigureServices(builder.Services);
 
 			builder.RootComponents.Add<App>("app");
-			builder.Services.AddBaseAddressHttpClient();
+			builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 			await builder.Build().RunAsync();
 		}
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Client.IdentityServer.Code.Complex
@@ -21,13 +22,14 @@ namespace Client.IdentityServer.Code.Complex
         public async Task<IList<WeatherForecast>> GetAll()
         {
             await _stateProvider.SetAuthorizationHeader(_httpClient);
-            return await _httpClient.GetJsonAsync<IList<WeatherForecast>>("WeatherForecast");
+            return await _httpClient.GetFromJsonAsync<IList<WeatherForecast>>("WeatherForecast");
         }
 
         public async Task<bool> Create(AddWeatherForecastModel model)
         {
             await _stateProvider.SetAuthorizationHeader(_httpClient);
-            return await _httpClient.PostJsonAsync<bool>("WeatherForecast", model);
+            var response = await _httpClient.PostAsJsonAsync("WeatherForecast", model);
+            return await response.Content.ReadFromJsonAsync<bool>();
         }
     }
 

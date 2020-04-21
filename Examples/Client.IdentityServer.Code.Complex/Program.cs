@@ -6,6 +6,7 @@ using Client.IdentityServer.Code.Complex.Auth;
 using Microsoft.AspNetCore.Authorization;
 using MatBlazor;
 using System;
+using System.Net.Http;
 
 namespace Client.IdentityServer.Code.Complex
 {
@@ -17,7 +18,7 @@ namespace Client.IdentityServer.Code.Complex
             ConfigureServices(builder.Services);
 
             builder.RootComponents.Add<App>("app");
-			builder.Services.AddBaseAddressHttpClient();
+			builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 			await builder.Build().RunAsync();
         }
 
