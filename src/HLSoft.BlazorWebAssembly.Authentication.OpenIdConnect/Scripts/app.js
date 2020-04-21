@@ -1,5 +1,6 @@
 ﻿(function () {
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect = {};
+	const oidcManager = {};
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect = oidcManager;
 	let mgr = null;
 	let userStorage = window.sessionStorage;
 
@@ -13,7 +14,11 @@
 		return config;
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.configOidc = function (config) {
+	oidcManager.notifySilentRenewSuccess = function () {
+		DotNet.invokeMethodAsync('HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect', 'NotifySilentRefreshTokenSuccess');
+	}
+
+	oidcManager.configOidc = function (config) {
 		if (!mgr) {
 			mgr = new Oidc.UserManager(prepareOidcConfig(config));
 			// subscribe SilentRenewError event
@@ -27,31 +32,31 @@
 		}
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.signinRedirect = function () {
+	oidcManager.signinRedirect = function () {
 		return mgr.signinRedirect();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.signoutRedirect = function () {
+	oidcManager.signoutRedirect = function () {
 		return mgr.signoutRedirect();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.getUser = function () {
+	oidcManager.getUser = function () {
 		return mgr ? mgr.getUser() : null;
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.removeUser = function () {
+	oidcManager.removeUser = function () {
 		return mgr.removeUser();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.signinPopup = function () {
+	oidcManager.signinPopup = function () {
 		return mgr.signinPopup();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.signoutPopup = function () {
+	oidcManager.signoutPopup = function () {
 		return mgr.signoutPopup();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.signinSilent = function () {
+	oidcManager.signinSilent = function () {
 		return mgr.signinSilent();
 	}
 
@@ -61,31 +66,36 @@
 			: new Oidc.UserManager(prepareOidcConfig(config));
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninCallback = function (config) {
+	oidcManager.processSigninCallback = function (config) {
 		let mgr = createUserManager(config);
-		return mgr.signinRedirectCallback().then();
+		return mgr.signinRedirectCallback();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSilentCallback = function () {
+	oidcManager.processSilentCallback = function () {
 		let mgr = new Oidc.UserManager(prepareOidcConfig());
-		return mgr.signinSilentCallback(window.location.href);
+		return mgr.signinSilentCallback(window.location.href).then(() => {
+			// notify parent window that the silent refresh token succeeded
+			if (window.parent !== window && window.parent.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect) {
+				window.parent.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.notifySilentRenewSuccess();
+			}
+		});
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninPopup = function (config) {
+	oidcManager.processSigninPopup = function (config) {
 		let mgr = createUserManager(config);
 		return mgr.signinPopupCallback();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSignoutPopup = function (config) {
+	oidcManager.processSignoutPopup = function (config) {
 		let mgr = createUserManager(config);
 		mgr.signoutPopupCallback(false);
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.setPageDisplayStatus = function (show) {
+	oidcManager.setPageDisplayStatus = function (show) {
 		document.body.style.display = show ? 'block' : 'none';
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.silentOpenUrlInIframe = function (url, timeout) {
+	oidcManager.silentOpenUrlInIframe = function (url, timeout) {
 		return new Promise((resolve, reject) => {
 			let iframe = document.createElement('iframe');
 			iframe.style.display = 'none';
@@ -103,7 +113,7 @@
 		});
 	}
 	// call this method if you want to change the default user store (default: sessionStorage)
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.configUserStore = function (store) {
+	oidcManager.configUserStore = function (store) {
 		userStorage = store;
 	}
 })();

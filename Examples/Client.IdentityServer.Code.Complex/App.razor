@@ -38,6 +38,10 @@
             Toaster.Add("Sign out success!", MatToastType.Success);
         };
 
+        authenticationEventHandler.SilentRefreshTokenSuccessEvent += (obj, e) => {
+            Toaster.Add("Silent refresh success!", MatToastType.Success);
+        };
+
         authenticationEventHandler.SignInFailEvent += (obj, str) => {
             Toaster.Add($"Sign in fail! Error: {str}", MatToastType.Danger);
         };

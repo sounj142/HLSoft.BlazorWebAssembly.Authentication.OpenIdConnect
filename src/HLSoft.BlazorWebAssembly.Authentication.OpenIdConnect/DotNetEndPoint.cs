@@ -1,5 +1,6 @@
 ﻿using Microsoft.JSInterop;
 using System;
+using System.Threading.Tasks;
 
 namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 {
@@ -16,6 +17,12 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
         public static void NotifySilentRefreshTokenFail(Exception ex)
         {
             _authenticationEventHandler?.NotifySilentRefreshTokenFail(ex);
+        }
+
+        [JSInvokable]
+        public static void NotifySilentRefreshTokenSuccess()
+        {
+            _authenticationEventHandler?.NotifySilentRefreshTokenSuccess();
         }
     }
 }

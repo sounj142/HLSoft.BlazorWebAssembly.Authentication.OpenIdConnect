@@ -38,6 +38,11 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			_authenticationEventHandler = authenticationEventHandler;
 			_openIdConnectOptionsTask = openIdConnectOptionsTask;
 			_serviceProvider = serviceProvider;
+
+			////authenticationEventHandler.SilentRefreshTokenSuccessEvent += (obj, e) =>
+			////{
+			////	NotifyAuthenticationStateChanged();
+			////};
 		}
 
 		public async Task InitializeAuthenticationData()

@@ -26,6 +26,10 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		/// Raise when the logout workflow succeeded (both redirect and popup).
 		/// </summary>
 		public event EventHandler SignOutSuccessEvent;
+		/// <summary>
+		/// Raise when the automatic silent renew succeeded.
+		/// </summary>
+		public event EventHandler SilentRefreshTokenSuccessEvent;
 
 		public AuthenticationEventHandler()
 		{
@@ -65,6 +69,13 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 		public void NotifySignOutSuccess()
 		{
 			ProcessSuccess(SignOutSuccessEvent);
+		}
+		/// <summary>
+		/// Notify that the silent refresh process succeeded
+		/// </summary>
+		public void NotifySilentRefreshTokenSuccess()
+		{
+			ProcessSuccess(SilentRefreshTokenSuccessEvent);
 		}
 
 		private bool IsConcernError(string errorMsg)
