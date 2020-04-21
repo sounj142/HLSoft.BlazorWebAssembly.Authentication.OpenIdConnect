@@ -38,11 +38,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 			_authenticationEventHandler = authenticationEventHandler;
 			_openIdConnectOptionsTask = openIdConnectOptionsTask;
 			_serviceProvider = serviceProvider;
-
-			////authenticationEventHandler.SilentRefreshTokenSuccessEvent += (obj, e) =>
-			////{
-			////	NotifyAuthenticationStateChanged();
-			////};
 		}
 
 		public async Task InitializeAuthenticationData()
@@ -199,7 +194,6 @@ namespace HLSoft.BlazorWebAssembly.Authentication.OpenIdConnect
 
 		public async Task SetAuthorizationHeader(HttpClient httpClient, string tokenName = "access_token")
 		{
-			if (httpClient.DefaultRequestHeaders.Authorization != null) return;
 			var authState = await GetAuthenticationStateAsync();
 			var token = authState.GetClaim(tokenName);
 			if (!string.IsNullOrEmpty(token))
