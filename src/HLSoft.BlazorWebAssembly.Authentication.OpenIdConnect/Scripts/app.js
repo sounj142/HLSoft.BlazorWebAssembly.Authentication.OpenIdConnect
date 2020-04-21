@@ -57,7 +57,7 @@
 
 	function createUserManager(config) {
 		return config.isCode
-			? new Oidc.UserManager(prepareOidcConfig({...config, loadUserInfo: true, response_mode: 'query' }))
+			? new Oidc.UserManager(prepareOidcConfig({ ...config, response_mode: 'query' }))
 			: new Oidc.UserManager(prepareOidcConfig(config));
 	}
 
