@@ -55,14 +55,14 @@
 		return mgr.signinSilent();
 	}
 
-	function createUserManager(isCode) {
-		return isCode
-			? new Oidc.UserManager(prepareOidcConfig({ loadUserInfo: true, response_mode: 'query' }))
-			: new Oidc.UserManager(prepareOidcConfig());
+	function createUserManager(config) {
+		return config.isCode
+			? new Oidc.UserManager(prepareOidcConfig({...config, loadUserInfo: true, response_mode: 'query' }))
+			: new Oidc.UserManager(prepareOidcConfig(config));
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninCallback = function (isCode) {
-		let mgr = createUserManager(isCode);
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninCallback = function (config) {
+		let mgr = createUserManager(config);
 		return mgr.signinRedirectCallback().then();
 	}
 
@@ -71,13 +71,13 @@
 		return mgr.signinSilentCallback(window.location.href);
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninPopup = function (isCode) {
-		let mgr = createUserManager(isCode);
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSigninPopup = function (config) {
+		let mgr = createUserManager(config);
 		return mgr.signinPopupCallback();
 	}
 
-	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSignoutPopup = function (isCode) {
-		let mgr = createUserManager(isCode);
+	window.HLSoftBlazorWebAssemblyAuthenticationOpenIdConnect.processSignoutPopup = function (config) {
+		let mgr = createUserManager(config);
 		mgr.signoutPopupCallback(false);
 	}
 
